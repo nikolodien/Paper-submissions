@@ -46,25 +46,52 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Sentiment Analyis is mainly the classification of text into two
-classes viz. positive and negative. Joint sentiment and topic models
-have been used to tackle this classification problem. Inspite of
-having a hierarchical structure, these generative models are essentially
-extensions of bag-of-words model. Due to this fact, they tend to misclassify
-texts having sentiment in the form of phrases. Topic models in general
-don't work properly with phrases. To tackle this situation, we propose 
-an approach to sentiment analysis using topical n-grams which have been shown
-to be effective with phrases. We train the topical n-grams model using 
-two topics i.e; positive and negative, list of positive and negative words, and 
-rules to detect positive and negative phrases. New documents are then 
-classified using this trained model. The system gives better results than
-the existing Joint Sentiment Topic model.
+Sentiment Analysis is mainly the classification of text into two classes viz. 
+positive and negative. Joint sentiment and topic models have been used to 
+tackle this classification problem.  Despite having a hierarchical structure, 
+these generative models are essentially extensions of bag of words model. Due 
+to this fact, they tend to misclassify texts having sentiment in the form of 
+phrases. Topic models in general don't work properly with phrases. To tackle 
+this situation, we propose an approach to sentiment analysis using topical 
+n-grams which have been shown to be effective with phrases. We train the topical 
+n-grams model using two topics i.e; positive and negative, list of positive 
+and negative words, and rules to detect positive and negative phrases. New 
+documents are then classified using this trained model. The system gives 
+better results than the existing Joint Sentiment Topic model. We also propose 
+an approach to generate list of positive ang negative words using LDA.
 
 \end{abstract}
 
 \section{Introduction}
 
+LDA (Latent Dirichlet Allocation) as shown in ~\cite{blei2003latent} is generative 
+model used to discover topics in a document collection. It gives two types of 
+distributions as output, document-topic and word-topic distributions. The document-topic
+distribution gives the proportion of topics in each document and the word-topic 
+distribution gives the probability of a word being in each topic. LDA works on the 
+principle of co-occurrence. It assumes that words tending to appear together belong 
+to the same topic. JST (Joint Sentiment Topic) as explained in ~\cite{lin2009joint} 
+is a probabilistic generative model which extends LDA and discovers both sentiment 
+and topic simultaneously in a document collection. JST has shown promising results 
+on binary sentiment classification. 
 
+There are many extensions of the basic LDA model which try to combine both sentiment 
+and topic to solve the problem of sentiment analysis. All these models including LDA 
+have one underlying assumption which makes them unsuitable for text classification
+purposes. They assume that each word is generated separately and independent of other 
+words. This is essentially the bag of words assumption. However, text being a sequence 
+of words, the correct meaning of the text cannot be understood by merely capturing
+co-occurrences. In addition to this, we also need to consider collocation of words.
+A phrase is a collocation of words which usually has more meaning than the individual
+words making up that phrase. There is a subtle difference between a phrase and collocation
+of words. Not all collocations of words can be considered as a phrase. A model which
+takes into account phrases is needed to tackle this situation.
+
+Topical n-grams ~\cite{wang2007topical} is one such generative model.
+
+
+
+\section{Literature Survey}
 
 \section{Credits}
 
@@ -406,6 +433,27 @@ when submitting your paper for review.
 %\bibliography{acl2014}
 
 \begin{thebibliography}{}
+
+\bibitem[\protect\citename{Wang et al.}2007]{wang2007topical}
+Wang, Xuerui and McCallum, Andrew and Wei, Xing.
+\newblock 2007.
+\newblock {\em Topical n-grams: Phrase and topic discovery, with an application to information retrieval}.
+\newblock {\em Data Mining, 2007. ICDM 2007. Seventh IEEE International Conference on}, pages 697-702.
+\newblock IEEE.
+
+\bibitem[\protect\citename{Lin and He}2009]{lin2009joint}
+Lin, Chenghua and He, Yulan.
+\newblock 2009.
+\newblock {\em Joint sentiment-topic model for sentiment analysis}.
+\newblock {\em Proceedings of the 18th ACM conference on Information and knowledge management}, pages 375-384.
+\newblock ACM.
+
+\bibitem[\protect\citename{Blei et al.}2003]{blei2003latent}
+Blei, David M and Ng, Andrew Y and Jordan, Michael I.
+\newblock 2003.
+\newblock {\em Latent dirichlet allocation}
+\newblock {\em The Journal of machine learning research}, volume-3, pages 993-1022.
+\newblock JMLR.
 
 \bibitem[\protect\citename{Aho and Ullman}1972]{Aho:72}
 Alfred~V. Aho and Jeffrey~D. Ullman.
