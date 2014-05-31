@@ -28,18 +28,7 @@
 % in the camera-ready version and ask you to change it back.
 
 
-\title{Phrase based Sentiment Analysis}
-
-\author{First Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\\And
-  Second Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\}
+\title{Phrase based Sentiment Analysis using topical n-grams}
 
 \author{Nikhilkumar Jadhav \\
   Masters Student \\
@@ -57,8 +46,25 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  
+Sentiment Analyis is mainly the classification of text into two
+classes viz. positive and negative. Joint sentiment and topic models
+have been used to tackle this classification problem. Inspite of
+having a hierarchical structure, these generative models are essentially
+extensions of bag-of-words model. Due to this fact, they tend to misclassify
+texts having sentiment in the form of phrases. Topic models in general
+don't work properly with phrases. To tackle this situation, we propose 
+an approach to sentiment analysis using topical n-grams which have been shown
+to be effective with phrases. We train the topical n-grams model using 
+two topics i.e; positive and negative, list of positive and negative words, and 
+rules to detect positive and negative phrases. New documents are then 
+classified using this trained model. The system gives better results than
+the existing Joint Sentiment Topic model.
+
 \end{abstract}
+
+\section{Introduction}
+
+
 
 \section{Credits}
 
