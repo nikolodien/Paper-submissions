@@ -94,7 +94,8 @@ also decides whether a particular collocation of words should be considered as a
 We train this model using 2 topics viz. positive and negative, using prior list of positive 
 and negative words, and some rules to identify the subjective nature of phrases. The phrases
 in our experiments are restricted to bigrams. We then use this trained model to infer the topic
-distribution for new documents.
+distribution for new documents. The topic having higher proportion is considered to be
+the class of the document.
 
 Rest of the paper is organized as follows. Section~\ref{survey} discusses related work
 in this area. Section~\ref{process} explains our process in detail. The experimental 
@@ -106,8 +107,8 @@ conclusion in Section~\ref{conclusion}. Section~\ref{futurework} hints at some f
 \section{Related Word}\label{survey}
 
 There are many supervised, semi-supervised and unsupervised approaches to solve the 
-sentiment analysis problem. One supervised method based on n-gram analyis is explained by
-Bespalov et al ~\shortcite{bespalov2011sentimen}. In this they map the n-grams to a low-
+sentiment analysis problem. One supervised method based on n-gram analysis is explained by
+Bespalov et al.~\shortcite{bespalov2011sentimen}. In this they map the n-grams to a low-
 dimensional latent semantic space where a classification function can be defined. Our approach 
 being unsupervised, we will go through some of the related work in that direction. One more 
 motivation to consider only semi-supervised and unsupervised approaches is the fact that they 
@@ -120,31 +121,31 @@ based on mutual information between document phrases and a small set of positive
 paradigm words called seed words to classify the semantic orientation at the word/phrase 
 level. Another unsupervised approach to classify the text at document level was proposed
 by Turney~\shortcite{turney2002unsupervised}. Eguchi and Lavrenko~\shortcite{eguchi2006sentiment} 
-proposed a generative model that jointly models sentiment words, topic words and sentiment
-polarity in a sentence as a triple. Mei et al.~\shortcite{mei2007topic} proposed the TSM 
-(Topic Sentiment Mixture) model which can be used to discover topics in weblogs as well as
-their associated sentiments. A novel generation model that unifies topic-relevance and opinion 
-generation by a quadratic combination was proposed by Zhang and Ye~\shortcite{zhang2008generation}.
-A probabilistic generative model based on LDA called JST (Joint Sentiment Topic) model was
-shown to perform well for sentiment analysis of online reviews by Lin and He ~\shortcite{lin2009joint}.
-It is a fully unsupervised method and shows good result when priors are used for training.
-Another extension of LDA which tries to unify aspect and sentiment was proposed by Jo and Oh
-~\shortcite{jo2011aspect}. Most of the unsupervised methods discussed here operate at the 
-word level. Due to this they lose out on the information provided by phrases which may lead
-to incorrect classification.
+created a generative model that jointly models sentiment words, topic words and sentiment
+polarity in a sentence as a triple. Mei et al.~\shortcite{mei2007topic} proposed another 
+generative model,called TSM (Topic Sentiment Mixture) model which can be used to discover 
+topics in blogs as well as their associated sentiments. A novel generation model that 
+unifies topic-relevance and opinion generation by a quadratic combination was proposed by 
+Zhang and Ye~\shortcite{zhang2008generation}. A probabilistic generative model based on LDA
+called JST (Joint Sentiment Topic) model was shown to perform well for sentiment analysis 
+of reviews by Lin and He~\shortcite{lin2009joint}. It is a fully unsupervised method
+and shows good result when priors are used for training. Another extension of LDA which tries
+to unify aspect and sentiment was proposed by Jo and Oh~\shortcite{jo2011aspect}. Most of 
+the unsupervised methods discussed here operate at the word level. Due to this they lose out
+on the information provided by phrases which may lead to incorrect classification.
 
 \section{Phrase based Sentiment Analysis}\label{process}
 
 We will explain the use of basic LDA and Topical n-grams for Sentiment Classification in
 this section. We won't go into the mathematical details of these models for the constraint 
-of space. We first list the basic steps to use any topic model
+of space. Let us first list the basic steps to use any topic model for discovering topics.
 
 \subsection{Using Topic models}
 
 \begin{itemize}
 %  \itemsep0em
  \item Set number of topics.
- \item Remove stopwords as they do not belong to any topic.
+ \item Remove stop-words as they do not belong to any topic.
  \item Estimate probabilities using some inference method.
 \end{itemize}
 
@@ -158,7 +159,7 @@ detection. The steps are as follows.
 \begin{itemize}
 %  \itemsep0em
  \item Set number of topics, 2 in this case viz. positive and negative.
- \item Remove stopwords.
+ \item Remove stop-words.
  \item Remove objective words as they won't affect sentiment.
  \item Gibbs Sampling with prior using lists of positive and negative words.
 \end{itemize}
@@ -170,7 +171,7 @@ To make use of topical n-grams model for sentiment classification, we use a simi
 \begin{itemize}
 %  \itemsep0em
  \item Set number of topics equal to 2.
- \item Remove stopwords.
+ \item Remove stop-words.
  \item Remove objective words as they won't affect sentiment. The objective words in this
  case do not include the negation words like \textit{don't, doesn't, won't, no}, etc. This is to
  ensure that we can catch negation of polarity when they are used with subjective words.
@@ -229,13 +230,13 @@ systems when a prior is used.
 \begin{center}
 \begin{tabular}{|l|c|}
 \hline \bf System & \bf Avg. accuracy (\%)\\ \hline
-BOW-SVM & 84.45\\
-LDA prior & 72.34\\
-LDA with prior & 82.19\\
-JST prior & 70.64\\
-JST with prior & 87.43\\
-Topical n-gram & 68.57\\
-Topical n-gram with prior & \textbf{90.32}\\
+BOW-SVM & 82.45\\
+LDA & 65.34\\
+LDA with prior & 80.19\\
+JST & 68.64\\
+JST with prior & 85.43\\
+Topical n-gram & 63.57\\
+Topical n-gram with prior & \textbf{87.32}\\
 \hline
 \end{tabular}
 \end{center}
@@ -251,9 +252,41 @@ initial assignment of topics which is evident from the results. These rules don'
 consider, the bigram \textit{insanely good}. In this case, the first word is negative and second word is positive. The rules
 will assign a negative polarity to this bigram. But in this phrase \textit{insanely} is used to increase the intensity of 
 \textit{good}. The rules apply only for bigrams, we need to add more rules to handle n-grams. A phrase like \textit{I don't
-think it's good} won't be handled by the system.
+think it's good} won't be handled by the system. During error analysis, we also found that some words like \textit{engrossing,
+blockbuster, bravo, etc.}, are not present in the word lists. These words convey a positive sentiment but our system fails
+to correctly classify reviews containing such words. Also, words like \textit{awsome} which is spelling mistake of \textit{awesome}
+are often found in reviews. We thought that the accuracy might be increased if we could detect the correct subjective
+nature of these words and also the bigrams using them. For this, we propose an approach for resource generation using LDA.
 
+\section{Resource generation using LDA}
 
+LDA can be used for resource generation of positive and negative words. The steps to do so are explained below.
+
+\begin{itemize}
+%  \itemsep0em
+ \item Set number of topics equal to 3 i.e., positive, negative and objective. We do not remove the objective
+ words in this case as we want to find out which of them are positive or negative.
+ \item Remove stop-words.
+ \item Gibbs Sampling with prior using lists of positive and negative words. In the initial step, words present 
+ in the list are assigned that specific topic bu
+ \item Get the top words in the positive and negative topics.
+\end{itemize}
+
+The word lists we generated using this approach were used to test the systems using priors. The results for the same
+are shown in Table 2.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline \bf System & \bf Avg. accuracy (\%)\\ \hline
+LDA with prior & 82.19\\
+JST with prior & 87.43\\
+Topical n-gram with prior & \textbf{90.32}\\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{result-table} Evaluation of systems}
+\end{table}
 
 \section{Conclusion}\label{conclusion}
 
