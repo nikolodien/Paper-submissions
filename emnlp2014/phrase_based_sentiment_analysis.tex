@@ -49,16 +49,16 @@
 Sentiment Analysis is mainly the classification of text into two classes viz. 
 positive and negative. Joint sentiment and topic models have been used to 
 tackle this classification problem.  Despite having a hierarchical structure, 
-these generative models are essentially extensions of bag of words model. Due 
-to this fact, they tend to misclassify texts having sentiment in the form of 
-phrases. LDA and it's extensions don't work properly with phrases. To tackle 
-this situation, we propose an unsupervised approach to sentiment analysis using 
-topical n-grams which have been shown to be effective with phrases. We train 
-the topical n-grams model using two topics i.e; positive and negative, list of
-positive and negative words, and rules to detect positive and negative phrases. 
-New documents are then classified using this trained model. The system gives 
-better results than the existing Joint Sentiment Topic model. We also propose 
-an approach to generate list of positive and negative words using LDA.
+these generative models have a bag of words assumption. Due to this fact, 
+they tend to misclassify texts having sentiment in the form of phrases. LDA 
+and it's extensions don't work properly with phrases. To tackle this situation, 
+we propose an unsupervised approach to sentiment analysis using topical n-grams
+which have been shown to be effective with phrases. We train the topical n-grams 
+model using two topics i.e., positive and negative, list of positive and negative 
+words, and rules to detect positive and negative phrases. New documents are then 
+classified using this trained model. The system gives better results than the 
+existing Joint Sentiment Topic model. We also propose an approach to generate 
+list of positive and negative words using LDA.
 
 \end{abstract}
 
@@ -66,7 +66,7 @@ an approach to generate list of positive and negative words using LDA.
 
 
 \indent LDA (Latent Dirichlet Allocation) as shown by Blei et al.~\shortcite{blei2003latent} 
-is generative model used to discover topics in a document collection. It gives two types of 
+is a generative model used to discover topics in a document collection. It gives two types of 
 distributions as output, document-topic and word-topic distributions. The document-topic
 distribution gives the proportion of topics in each document and the word-topic 
 distribution gives the probability of a word being in each topic. LDA works on the 
@@ -125,16 +125,17 @@ level. Another unsupervised approach to classify the text at document level was 
 by Turney~\shortcite{turney2002unsupervised}. Eguchi and Lavrenko~\shortcite{eguchi2006sentiment} 
 created a generative model that jointly models sentiment words, topic words and sentiment
 polarity in a sentence as a triple. Mei et al.~\shortcite{mei2007topic} proposed another 
-generative model,called TSM (Topic Sentiment Mixture) model which can be used to discover 
+generative model, called TSM (Topic Sentiment Mixture) model which can be used to discover 
 topics in blogs as well as their associated sentiments. A novel generation model that 
 unifies topic-relevance and opinion generation by a quadratic combination was proposed by 
 Zhang and Ye~\shortcite{zhang2008generation}. A probabilistic generative model based on LDA
 called JST (Joint Sentiment Topic) model was shown to perform well for sentiment analysis 
 of reviews by Lin and He~\shortcite{lin2009joint}. It is a fully unsupervised method
 and shows good result when priors are used for training. Another extension of LDA which tries
-to unify aspect and sentiment was proposed by Jo and Oh~\shortcite{jo2011aspect}. Most of 
-the unsupervised methods discussed here operate at the word level. Due to this they lose out
-on the information provided by phrases which may lead to incorrect classification.
+to unify aspect and sentiment was proposed by Jo and Oh~\shortcite{jo2011aspect}. All the 
+unsupervised methods using generative models discussed here operate at the word level. Due 
+to this they lose out on the information provided by phrases which may lead to incorrect 
+classification.
 
 \section{Phrase based Sentiment Analysis}\label{process}
 
@@ -206,18 +207,18 @@ the rules as they are concerned with subjectivity.
 
 \section{Experimental Setup}\label{experiments}
 
-Analysis was performed for binary sentiment classification task. The language used in this case was English.
+Analysis was performed for the binary sentiment classification task. The language used in this case was English.
 We conducted experiments on 4 models, BOW using SVM, LDA ~\cite{blei2003latent}, JST ~\cite{lin2009joint}, and 
 Topical n-gram model ~\cite{wang2007topical}. We used two settings for the topic models, with and without prior. 
 The word lists used are those specified in ~\cite{liu2010sentiment}. The implementations of SVM, LDA and Topical
 n-gram in Mallet \footnote{http://mallet.cs.umass.edu/} have been used for evaluation. For JST, we have used the 
 implementation provided by the authors \footnote{https://github.com/linron84/JST}. The default settings for the
-hyper-parameters were used in all these implementations.
-
+hyper-parameters were used in all these implementations. Some changes in the implementations of LDA and Topical
+n-gram were made to take into account the prior information.
 
 \subsection*{Dataset}
 
-To create the dataset we made use of the amazon reviews dataset provided by SNAP \footnote{http://snap.stanford.edu/}.
+To create the dataset we used of the amazon reviews dataset provided by SNAP \footnote{http://snap.stanford.edu/}.
 These reviews are not tagged with sentiment but they have ratings from 1 to 5. We used this information to create
 a sentiment tagged corpus. The reviews with ratings less than 3 were tagged as negative and others were tagged
 as positive. We conducted the experiments on 6,00,000 reviews containing equal number of positive and negative
