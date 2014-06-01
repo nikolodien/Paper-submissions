@@ -106,12 +106,14 @@ conclusion in Section~\ref{conclusion}. Section~\ref{futurework} hints at some f
 \section{Related Word}\label{survey}
 
 There are many supervised, semi-supervised and unsupervised approaches to solve the 
-sentiment analysis problem. Our approach being unsupervised, we will go through some of
-the related work in that direction. One more motivation to consider only semi-supervised and
-unsupervised approaches is the fact that they don't need any corpus and don't have any domain 
-specific limitations. Rule based systems can also be considered as unsupervised systems but 
-usually due to exceptions to these rules, their performance is affected. Due to this, we
-are not considering them in further discussion.
+sentiment analysis problem. One supervised method based on n-gram analyis is explained by
+Bespalov et al ~\shortcite{bespalov2011sentimen}. In this they map the n-grams to a low-
+dimensional latent semantic space where a classification function can be defined. Our approach 
+being unsupervised, we will go through some of the related work in that direction. One more 
+motivation to consider only semi-supervised and unsupervised approaches is the fact that they 
+don't need any corpus and don't have any domain specific limitations. Rule based systems can 
+also be considered as unsupervised systems but usually due to exceptions to these rules, their 
+performance is affected. Due to this, we are not considering them in further discussion.
 
 Turney and Littman~\shortcite{turney2002thumbs} used an unsupervised learning algorithm 
 based on mutual information between document phrases and a small set of positive/negative 
@@ -121,8 +123,15 @@ by Turney~\shortcite{turney2002unsupervised}. Eguchi and Lavrenko~\shortcite{egu
 proposed a generative model that jointly models sentiment words, topic words and sentiment
 polarity in a sentence as a triple. Mei et al.~\shortcite{mei2007topic} proposed the TSM 
 (Topic Sentiment Mixture) model which can be used to discover topics in weblogs as well as
-their associated sentiments.
-
+their associated sentiments. A novel generation model that unifies topic-relevance and opinion 
+generation by a quadratic combination was proposed by Zhang and Ye~\shortcite{zhang2008generation}.
+A probabilistic generative model based on LDA called JST (Joint Sentiment Topic) model was
+shown to perform well for sentiment analysis of online reviews by Lin and He ~\shortcite{lin2009joint}.
+It is a fully unsupervised method and shows good result when priors are used for training.
+Another extension of LDA which tries to unify aspect and sentiment was proposed by Jo and Oh
+~\shortcite{jo2011aspect}. Most of the unsupervised methods discussed here operate at the 
+word level. Due to this they lose out on the information provided by phrases which may lead
+to incorrect classification.
 
 \section{Phrase based Sentiment Analysis}\label{process}
 
@@ -133,7 +142,7 @@ of space. We first list the basic steps to use any topic model
 \subsection{Using Topic models}
 
 \begin{itemize}
- \itemsep0em
+%  \itemsep0em
  \item Set number of topics.
  \item Remove stopwords as they do not belong to any topic.
  \item Estimate probabilities using some inference method.
@@ -147,7 +156,7 @@ a prior information about the positivity and negativity of words to aid in the t
 detection. The steps are as follows.
 
 \begin{itemize}
- \itemsep0em
+%  \itemsep0em
  \item Set number of topics, 2 in this case viz. positive and negative.
  \item Remove stopwords.
  \item Remove objective words as they won't affect sentiment.
@@ -159,7 +168,7 @@ detection. The steps are as follows.
 To make use of topical n-grams model for sentiment classification, we use a similar approach.
 
 \begin{itemize}
- \itemsep0em
+%  \itemsep0em
  \item Set number of topics equal to 2.
  \item Remove stopwords.
  \item Remove objective words as they won't affect sentiment. The objective words in this
@@ -177,7 +186,7 @@ In the following rules, we mean topic when we say polarity. The use of polarity 
 the rules as they are concerned with subjectivity.
 
 \begin{enumerate}
- \itemsep0em
+%  \itemsep0em
  \item If the first word in the bigram is a negation word and the second word is subjective then the polarity
  of the bigram is opposite to the polarity of the second word. \\
  \textbf{Examples:} \textit{won't like, won't regret, etc.}. Here, \textit{won't like} is assigned negative
@@ -257,6 +266,20 @@ think it's good} won't be handled by the system.
 %\bibliography{acl2014}
 
 \begin{thebibliography}{}
+
+\bibitem[\protect\citename{Bespalov et al.}2011]{bespalov2011sentimen}
+Bespalov, Dmitriy and Bai, Bing and Qi, Yanjun and Shokoufandeh, Ali
+\newblock 2011.
+\newblock {\em Sentiment classification based on supervised latent n-gram analysis}.
+\newblock {\em Proceedings of the 20th ACM international conference on Information and knowledge management}, pages 375-382.
+\newblock ACM.
+
+\bibitem[\protect\citename{Jo and Oh}2011]{jo2011aspect}
+Jo, Yohan and Oh, Alice H
+\newblock 2011.
+\newblock {\em Aspect and sentiment unification model for online review analysis}.
+\newblock {\em Proceedings of the fourth ACM international conference on Web search and data mining}, pages 815-824.
+\newblock ACM.
 
 \bibitem[\protect\citename{Zhang and Ye}2008]{zhang2008generation}
 Zhang, Min and Ye, Xingyao
