@@ -30,16 +30,16 @@
 
 \title{Phrase based Sentiment Analysis using topical n-grams}
 
-\author{Nikhilkumar Jadhav \\
-  Masters Student \\
-  Computer Science \& Engg. Dept. \\
-  IIT Bombay \\
-  {\tt nikhilkumar@cse.iitb.ac.in} \\\And
-  Pushpak Bhattacharyya \\
-  Professor \\
-  Computer Science \& Engg. Dept. \\
-  IIT Bombay \\
-  {\tt pb@cse.iitb.ac.in} \\}
+% \author{Nikhilkumar Jadhav \\
+%   Masters Student \\
+%   Computer Science \& Engg. Dept. \\
+%   IIT Bombay \\
+%   {\tt nikhilkumar@cse.iitb.ac.in} \\\And
+%   Pushpak Bhattacharyya \\
+%   Professor \\
+%   Computer Science \& Engg. Dept. \\
+%   IIT Bombay \\
+%   {\tt pb@cse.iitb.ac.in} \\}
 
 \date{}
 
@@ -51,26 +51,27 @@ positive and negative. Joint sentiment and topic models have been used to
 tackle this classification problem.  Despite having a hierarchical structure, 
 these generative models are essentially extensions of bag of words model. Due 
 to this fact, they tend to misclassify texts having sentiment in the form of 
-phrases. Topic models in general don't work properly with phrases. To tackle 
-this situation, we propose an approach to sentiment analysis using topical 
-n-grams which have been shown to be effective with phrases. We train the topical 
-n-grams model using two topics i.e; positive and negative, list of positive 
-and negative words, and rules to detect positive and negative phrases. New 
-documents are then classified using this trained model. The system gives 
+phrases. LDA and it's extensions don't work properly with phrases. To tackle 
+this situation, we propose an unsupervised approach to sentiment analysis using 
+topical n-grams which have been shown to be effective with phrases. We train 
+the topical n-grams model using two topics i.e; positive and negative, list of
+positive and negative words, and rules to detect positive and negative phrases. 
+New documents are then classified using this trained model. The system gives 
 better results than the existing Joint Sentiment Topic model. We also propose 
-an approach to generate list of positive ang negative words using LDA.
+an approach to generate list of positive and negative words using LDA.
 
 \end{abstract}
 
 \section{Introduction}
 
-LDA (Latent Dirichlet Allocation) as shown in ~\cite{blei2003latent} is generative 
-model used to discover topics in a document collection. It gives two types of 
+
+\indent LDA (Latent Dirichlet Allocation) as shown by Blei et al.~\shortcite{blei2003latent} 
+is generative model used to discover topics in a document collection. It gives two types of 
 distributions as output, document-topic and word-topic distributions. The document-topic
 distribution gives the proportion of topics in each document and the word-topic 
 distribution gives the probability of a word being in each topic. LDA works on the 
 principle of co-occurrence. It assumes that words tending to appear together belong 
-to the same topic. JST (Joint Sentiment Topic) as explained in ~\cite{lin2009joint} 
+to the same topic. JST (Joint Sentiment Topic) as explained by Lin and He~\shortcite{lin2009joint} 
 is a probabilistic generative model which extends LDA and discovers both sentiment 
 and topic simultaneously in a document collection. JST has shown promising results 
 on binary sentiment classification. 
@@ -84,355 +85,220 @@ of words, the correct meaning of the text cannot be understood by merely capturi
 co-occurrences. In addition to this, we also need to consider collocation of words.
 A phrase is a collocation of words which usually has more meaning than the individual
 words making up that phrase. There is a subtle difference between a phrase and collocation
-of words. Not all collocations of words can be considered as a phrase. A model which
-takes into account phrases is needed to tackle this situation.
+of words. Not all collocations of words can be considered as a phrase. We need a 
+model which takes into account phrases to completely understand the meaning of the text.
 
-Topical n-grams ~\cite{wang2007topical} is one such generative model.
+Topical n-grams as described by Wang et al.~\shortcite{wang2007topical} is one such generative 
+model which takes into account not only co-occurrences but also collocations of words. It 
+also decides whether a particular collocation of words should be considered as a phrase or not. 
+We train this model using 2 topics viz. positive and negative, using prior list of positive 
+and negative words, and some rules to identify the subjective nature of phrases. The phrases
+in our experiments are restricted to bigrams. We then use this trained model to infer the topic
+distribution for new documents.
 
-
-
-\section{Literature Survey}
-
-\section{Credits}
-
-This document has been adapted from the instructions for earlier ACL
-proceedings, including those for ACL-2012 by Maggie Li and Michael
-White, those from ACL-2010 by Jing-Shing Chang and Philipp Koehn,
-those for ACL-2008 by Johanna D. Moore, Simone Teufel, James Allan,
-and Sadaoki Furui, those for ACL-2005 by Hwee Tou Ng and Kemal
-Oflazer, those for ACL-2002 by Eugene Charniak and Dekang Lin, and
-earlier ACL and EACL formats. Those versions were written by several
-people, including John Chen, Henry S. Thompson and Donald
-Walker. Additional elements were taken from the formatting
-instructions of the {\em International Joint Conference on Artificial
-  Intelligence}.
-
-\section{Introduction}
-
-The following instructions are directed to authors of papers submitted
-to ACL-2014 or accepted for publication in its proceedings. All
-authors are required to adhere to these specifications. Authors are
-required to provide a Portable Document Format (PDF) version of their
-papers. \textbf{The proceedings are designed for printing on A4
-  paper.}
-
-Authors from countries in which access to word-processing systems is
-limited should contact the publication chairs, Alexander Koller
-(\texttt{koller@ling.uni-potsdam.de}) and Yusuke Miyao
-(\texttt{yusuke@nii.ac.jp}), as soon as possible.
-
-We will make more detailed instructions available at
-\url{http://sites.google.com/site/acl2014publication}. Please check
-this website regularly.
+Rest of the paper is organized as follows. Section~\ref{survey} discusses related work
+in this area. Section~\ref{process} explains our process in detail. The experimental 
+setup is explained in Section~\ref{experiments}. Results of the experiments are presented
+is Section~\ref{results}. Section~\ref{discussion} discusses these results followed by
+conclusion in Section~\ref{conclusion}. Section~\ref{futurework} hints at some future work.
 
 
-\section{General Instructions}
+\section{Related Word}\label{survey}
 
-Manuscripts must be in two-column format.  Exceptions to the
-two-column format include the title, authors' names and complete
-addresses, which must be centered at the top of the first page, and
-any full-width figures or tables (see the guidelines in
-Subsection~\ref{ssec:first}). {\bf Type single-spaced.}  Start all
-pages directly under the top margin. See the guidelines later
-regarding formatting the first page.  The manuscript should be
-printed single-sided and its length
-should not exceed the maximum page limit described in Section~\ref{sec:length}.
-Do not number the pages.
+There are many supervised, semi-supervised and unsupervised approaches to solve the 
+sentiment analysis problem. Our approach being unsupervised, we will go through some of
+the related work in that direction. One more motivation to consider only semi-supervised and
+unsupervised approaches is the fact that they don't need any corpus and don't have any domain 
+specific limitations. Rule based systems can also be considered as unsupervised systems but 
+usually due to exceptions to these rules, their performance is affected. Due to this, we
+are not considering them in further discussion.
 
-
-\subsection{Electronically-available resources}
-
-We strongly prefer that you prepare your PDF files using \LaTeX\ with
-the official ACL 2014 style file (acl2014.sty) and bibliography style
-(acl.bst). These files are available at
-\url{http://www.cs.jhu.edu/ACL2014/}. You will also find the document
-you are currently reading (acl2014.pdf) and its \LaTeX\ source code
-(acl2014.tex) on this website.
-
-You can alternatively use Microsoft Word to produce your PDF file. In
-this case, we strongly recommend the use of the Word template file
-(acl2014.dot) on the ACL 2014 website. If you have an option, we
-recommend that you use the \LaTeX2e version. If you will be
-  using the Microsoft Word template, we suggest that you anonymize
-  your source file so that the pdf produced does not retain your
-  identity.  This can be done by removing any personal information
-from your source document properties.
+Turney and Littman~\shortcite{turney2002thumbs} used an unsupervised learning algorithm 
+based on mutual information between document phrases and a small set of positive/negative 
+paradigm words called seed words to classify the semantic orientation at the word/phrase 
+level. Another unsupervised approach to classify the text at document level was proposed
+by Turney~\shortcite{turney2002unsupervised}. Eguchi and Lavrenko~\shortcite{eguchi2006sentiment} 
+proposed a generative model that jointly models sentiment words, topic words and sentiment
+polarity in a sentence as a triple. Mei et al.~\shortcite{mei2007topic} proposed the TSM 
+(Topic Sentiment Mixture) model which can be used to discover topics in weblogs as well as
+their associated sentiments.
 
 
+\section{Phrase based Sentiment Analysis}\label{process}
 
-\subsection{Format of Electronic Manuscript}
-\label{sect:pdf}
+We will explain the use of basic LDA and Topical n-grams for Sentiment Classification in
+this section. We won't go into the mathematical details of these models for the constraint 
+of space. We first list the basic steps to use any topic model
 
-For the production of the electronic manuscript you must use Adobe's
-Portable Document Format (PDF). PDF files are usually produced from
-\LaTeX\ using the \textit{pdflatex} command. If your version of
-\LaTeX\ produces Postscript files, you can convert these into PDF
-using \textit{ps2pdf} or \textit{dvipdf}. On Windows, you can also use
-Adobe Distiller to generate PDF.
-
-Please make sure that your PDF file includes all the necessary fonts
-(especially tree diagrams, symbols, and fonts with Asian
-characters). When you print or create the PDF file, there is usually
-an option in your printer setup to include none, all or just
-non-standard fonts.  Please make sure that you select the option of
-including ALL the fonts. \textbf{Before sending it, test your PDF by
-  printing it from a computer different from the one where it was
-  created.} Moreover, some word processors may generate very large PDF
-files, where each page is rendered as an image. Such images may
-reproduce poorly. In this case, try alternative ways to obtain the
-PDF. One way on some systems is to install a driver for a postscript
-printer, send your document to the printer specifying ``Output to a
-file'', then convert the file to PDF.
-
-It is of utmost importance to specify the \textbf{A4 format} (21 cm
-x 29.7 cm) when formatting the paper. When working with
-{\tt dvips}, for instance, one should specify {\tt -t a4}.
-
-Print-outs of the PDF file on A4 paper should be identical to the
-hardcopy version. If you cannot meet the above requirements about the
-production of your electronic submission, please contact the
-publication chairs as soon as possible.
-
-
-\subsection{Layout}
-\label{ssec:layout}
-
-Format manuscripts two columns to a page, in the manner these
-instructions are formatted. The exact dimensions for a page on A4
-paper are:
+\subsection{Using Topic models}
 
 \begin{itemize}
-\item Left and right margins: 2.5 cm
-\item Top margin: 2.5 cm
-\item Bottom margin: 2.5 cm
-\item Column width: 7.7 cm
-\item Column height: 24.7 cm
-\item Gap between columns: 0.6 cm
+ \itemsep0em
+ \item Set number of topics.
+ \item Remove stopwords as they do not belong to any topic.
+ \item Estimate probabilities using some inference method.
 \end{itemize}
 
-\noindent Papers should not be submitted on any other paper size.
- If you cannot meet the above requirements about the production of your electronic submission, please contact the publication chairs above as soon as possible.
+\subsection{Using LDA for Sentiment Classification}
+
+To use basic LDA as a sentiment classifier, we add one more step to remove objective words.
+Also, during Gibbs sampling the first step assigns topics randomly to words. We introduce
+a prior information about the positivity and negativity of words to aid in the topic
+detection. The steps are as follows.
+
+\begin{itemize}
+ \itemsep0em
+ \item Set number of topics, 2 in this case viz. positive and negative.
+ \item Remove stopwords.
+ \item Remove objective words as they won't affect sentiment.
+ \item Gibbs Sampling with prior using lists of positive and negative words.
+\end{itemize}
+
+\subsection{Using Topical n-grams Model for Sentiment Classification}
+
+To make use of topical n-grams model for sentiment classification, we use a similar approach.
+
+\begin{itemize}
+ \itemsep0em
+ \item Set number of topics equal to 2.
+ \item Remove stopwords.
+ \item Remove objective words as they won't affect sentiment. The objective words in this
+ case do not include the negation words like \textit{don't, doesn't, won't, no}, etc. This is to
+ ensure that we can catch negation of polarity when they are used with subjective words.
+ \item Gibbs Sampling with prior. The prior used in this case is more sophisticated and can
+ handle both words and phrases. In case of words, it simply uses a list of positive and negative
+ words. There are some rules to detect and assign topics to phrases which are explained next.
+\end{itemize}
+
+\subsubsection*{Rules for Topic assignment of phrases}
+
+At present, our rules are restricted to bigrams. We plan to extend them as explained in Section~\ref{futurework}.
+In the following rules, we mean topic when we say polarity. The use of polarity makes it easy to understand
+the rules as they are concerned with subjectivity.
+
+\begin{enumerate}
+ \itemsep0em
+ \item If the first word in the bigram is a negation word and the second word is subjective then the polarity
+ of the bigram is opposite to the polarity of the second word. \\
+ \textbf{Examples:} \textit{won't like, won't regret, etc.}. Here, \textit{won't like} is assigned negative
+ polarity and \textit{won't regret} is assigned positive polarity.
+ \item If both the words in the bigram are subjective then are two cases. If both words are of the same polarity
+ then resultant polarity is the same. But if their polarities are different, then the polarity of the first word
+ is assigned to the bigram. \\
+ \textbf{Examples:} \textit{beautifully amazing} is positive as both words as positive. \textit{lack respect} is
+ assigned negative as per the rules.
+\end{enumerate}
+
+\section{Experimental Setup}\label{experiments}
+
+Analysis was performed for binary sentiment classification task. The language used in this case was English.
+We conducted experiments on 4 models, BOW using SVM, LDA ~\cite{blei2003latent}, JST ~\cite{lin2009joint}, and 
+Topical n-gram model ~\cite{wang2007topical}. We used two settings for the topic models, with and without prior. 
+The word lists used are those specified in ~\cite{liu2010sentiment}. The implementations of SVM, LDA and Topical
+n-gram in Mallet \footnote{http://mallet.cs.umass.edu/} have been used for evaluation. For JST, we have used the 
+implementation provided by the authors \footnote{https://github.com/linron84/JST}. The default settings for the
+hyper-parameters were used in all these implementations.
 
 
-\subsection{Fonts}
+\subsection*{Dataset}
 
-For reasons of uniformity, Adobe's {\bf Times Roman} font should be
-used. In \LaTeX2e{} this is accomplished by putting
+To create the dataset we made use of the amazon reviews dataset provided by SNAP \footnote{http://snap.stanford.edu/}.
+These reviews are not tagged with sentiment but they have ratings from 1 to 5. We used this information to create
+a sentiment tagged corpus. The reviews with ratings less than 3 were tagged as negative and others were tagged
+as positive. We conducted the experiments on 6,00,000 reviews containing equal number of positive and negative
+reviews.
 
-\begin{quote}
-\begin{verbatim}
-\usepackage{times}
-\usepackage{latexsym}
-\end{verbatim}
-\end{quote}
-in the preamble. If Times Roman is unavailable, use {\bf Computer
-  Modern Roman} (\LaTeX2e{}'s default).  Note that the latter is about
-  10\% less dense than Adobe's Times Roman font.
+\section{Results}\label{results}
 
+The results presented here are for 10-fold cross validation. For the topic models, due to the randomness involved 
+during sampling, the best result obtained for each fold has been used for calculating the average. The Bag of words 
+system performs better than all the models when no prior information is provided. The performance of topic models 
+significantly increases when prior information is provided. Our approach to use Topical n-gram outperforms all the 
+systems when a prior is used.
 
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{|l|rl|}
-\hline \bf Type of Text & \bf Font Size & \bf Style \\ \hline
-paper title & 15 pt & bold \\
-author names & 12 pt & bold \\
-author affiliation & 12 pt & \\
-the word ``Abstract'' & 12 pt & bold \\
-section titles & 12 pt & bold \\
-document text & 11 pt  &\\
-captions & 11 pt & \\
-abstract text & 10 pt & \\
-bibliography & 10 pt & \\
-footnotes & 9 pt & \\
+\begin{tabular}{|l|c|}
+\hline \bf System & \bf Avg. accuracy (\%)\\ \hline
+BOW-SVM & 84.45\\
+LDA prior & 72.34\\
+LDA with prior & 82.19\\
+JST prior & 70.64\\
+JST with prior & 87.43\\
+Topical n-gram & 68.57\\
+Topical n-gram with prior & \textbf{90.32}\\
 \hline
 \end{tabular}
 \end{center}
-\caption{\label{font-table} Font guide. }
+\caption{\label{result-table} Evaluation of systems}
 \end{table}
 
-\subsection{The First Page}
-\label{ssec:first}
+\section{Discussion}\label{discussion}
 
-Center the title, author's name(s) and affiliation(s) across both
-columns. Do not use footnotes for affiliations. Do not include the
-paper ID number assigned during the submission process. Use the
-two-column format only when you begin the abstract.
-
-{\bf Title}: Place the title centered at the top of the first page, in
-a 15-point bold font. (For a complete guide to font sizes and styles,
-see Table~\ref{font-table}) Long titles should be typed on two lines
-without a blank line intervening. Approximately, put the title at 2.5
-cm from the top of the page, followed by a blank line, then the
-author's names(s), and the affiliation on the following line. Do not
-use only initials for given names (middle initials are allowed). Do
-not format surnames in all capitals (e.g., use ``Schlangen'' not
-``SCHLANGEN'').  Do not format title and section headings in all
-capitals as well except for proper names (such as ``BLEU'') that are
-conventionally in all capitals.  The affiliation should contain the
-author's complete address, and if possible, an electronic mail
-address. Start the body of the first page 7.5 cm from the top of the
-page.
-
-The title, author names and addresses should be completely identical
-to those entered to the electronical paper submission website in order
-to maintain the consistency of author information among all
-publications of the conference. If they are different, the publication
-chairs may resolve the difference without consulting with you; so it
-is in your own interest to double-check that the information is
-consistent.
-
-{\bf Abstract}: Type the abstract at the beginning of the first
-column. The width of the abstract text should be smaller than the
-width of the columns for the text in the body of the paper by about
-0.6 cm on each side. Center the word {\bf Abstract} in a 12 point bold
-font above the body of the abstract. The abstract should be a concise
-summary of the general thesis and conclusions of the paper. It should
-be no longer than 200 words. The abstract text should be in 10 point font.
-
-{\bf Text}: Begin typing the main body of the text immediately after
-the abstract, observing the two-column format as shown in 
-the present document. Do not include page numbers.
-
-{\bf Indent} when starting a new paragraph. Use 11 points for text and 
-subsection headings, 12 points for section headings and 15 points for
-the title. 
-
-\subsection{Sections}
-
-{\bf Headings}: Type and label section and subsection headings in the
-style shown on the present document.  Use numbered sections (Arabic
-numerals) in order to facilitate cross references. Number subsections
-with the section number and the subsection number separated by a dot,
-in Arabic numerals. Do not number subsubsections.
-
-{\bf Citations}: Citations within the text appear in parentheses
-as~\cite{Gusfield:97} or, if the author's name appears in the text
-itself, as Gusfield~\shortcite{Gusfield:97}.  Append lowercase letters
-to the year in cases of ambiguity.  Treat double authors as
-in~\cite{Aho:72}, but write as in~\cite{Chandra:81} when more than two
-authors are involved. Collapse multiple citations as
-in~\cite{Gusfield:97,Aho:72}. Also refrain from using full citations
-as sentence constituents. We suggest that instead of
-\begin{quote}
-  ``\cite{Gusfield:97} showed that ...''
-\end{quote}
-you use
-\begin{quote}
-``Gusfield \shortcite{Gusfield:97}   showed that ...''
-\end{quote}
-
-If you are using the provided \LaTeX{} and Bib\TeX{} style files, you
-can use the command \verb|\newcite| to get ``author (year)'' citations.
-
-As reviewing will be double-blind, the submitted version of the papers
-should not include the authors' names and affiliations. Furthermore,
-self-references that reveal the author's identity, e.g.,
-\begin{quote}
-``We previously showed \cite{Gusfield:97} ...''  
-\end{quote}
-should be avoided. Instead, use citations such as 
-\begin{quote}
-``Gusfield \shortcite{Gusfield:97}
-previously showed ... ''
-\end{quote}
-
-\textbf{Please do not use anonymous citations} and do not include
-acknowledgements when submitting your papers. Papers that do not
-conform to these requirements may be rejected without review.
-
-\textbf{References}: Gather the full set of references together under
-the heading {\bf References}; place the section before any Appendices,
-unless they contain references. Arrange the references alphabetically
-by first author, rather than by order of occurrence in the text.
-Provide as complete a citation as possible, using a consistent format,
-such as the one for {\em Computational Linguistics\/} or the one in the 
-{\em Publication Manual of the American 
-Psychological Association\/}~\cite{APA:83}.  Use of full names for
-authors rather than initials is preferred.  A list of abbreviations
-for common computer science journals can be found in the ACM 
-{\em Computing Reviews\/}~\cite{ACM:83}.
-
-The \LaTeX{} and Bib\TeX{} style files provided roughly fit the
-American Psychological Association format, allowing regular citations, 
-short citations and multiple citations as described above.
-
-{\bf Appendices}: Appendices, if any, directly follow the text and the
-references (but see above).  Letter them in sequence and provide an
-informative title: {\bf Appendix A. Title of Appendix}.
-
-\subsection{Footnotes}
-
-{\bf Footnotes}: Put footnotes at the bottom of the page and use 9
-points text. They may be numbered or referred to by asterisks or other
-symbols.\footnote{This is how a footnote should appear.} Footnotes
-should be separated from the text by a line.\footnote{Note the line
-separating the footnotes from the text.}
-
-\subsection{Graphics}
-
-{\bf Illustrations}: Place figures, tables, and photographs in the
-paper near where they are first discussed, rather than at the end, if
-possible.  Wide illustrations may run across both columns.  Color
-illustrations are discouraged, unless you have verified that  
-they will be understandable when printed in black ink.
-
-{\bf Captions}: Provide a caption for every illustration; number each one
-sequentially in the form:  ``Figure 1. Caption of the Figure.'' ``Table 1.
-Caption of the Table.''  Type the captions of the figures and 
-tables below the body, using 11 point text.
-
-
-\section{XML conversion and supported \LaTeX\ packages}
-
-ACL 2014 innovates over earlier years in that we will attempt to
-automatically convert your \LaTeX\ source files to machine-readable
-XML with semantic markup. This will facilitate future research that
-uses the ACL proceedings themselves as a corpus.
-
-We encourage you to submit a ZIP file of your \LaTeX\ sources along
-with the camera-ready version of your paper. We will then convert them
-to XML automatically, using the LaTeXML tool
-(\url{http://dlmf.nist.gov/LaTeXML}). LaTeXML has \emph{bindings} for
-a number of \LaTeX\ packages, including the ACL 2014 stylefile. These
-bindings allow LaTeXML to render the commands from these packages
-correctly in XML. For best results, we encourage you to use the
-packages that are officially supported by LaTeXML, listed at
-\url{http://dlmf.nist.gov/LaTeXML/manual/included.bindings}
+The performance of our system is better due to the capacity to handle phrases. All the other systems, consider each word
+separately. The performance improvement over JST is 3\% which is statistically significant. Though the system performs
+better for this dataset, it still has some obvious limitations. The system highly depends on the rules used for
+initial assignment of topics which is evident from the results. These rules don't apply to all the bigrams. Let us
+consider, the bigram \textit{insanely good}. In this case, the first word is negative and second word is positive. The rules
+will assign a negative polarity to this bigram. But in this phrase \textit{insanely} is used to increase the intensity of 
+\textit{good}. The rules apply only for bigrams, we need to add more rules to handle n-grams. A phrase like \textit{I don't
+think it's good} won't be handled by the system.
 
 
 
+\section{Conclusion}\label{conclusion}
 
 
-\section{Translation of non-English Terms}
+\section{Future Work}\label{futurework}
 
-It is also advised to supplement non-English characters and terms
-with appropriate transliterations and/or translations
-since not all readers understand all such characters and terms.
-Inline transliteration or translation can be represented in
-the order of: original-form transliteration ``translation''.
-
-\section{Length of Submission}
-\label{sec:length}
-
-Long papers may consist of up to 9 pages of content, plus two extra
-pages for references. Short papers may consist of up to 5 pages of
-content, plus two extra pages for references.  Papers that do not
-conform to the specified length and formatting requirements may be
-rejected without review.
-
-
-
-\section*{Acknowledgments}
-
-The acknowledgments should go immediately before the references.  Do
-not number the acknowledgments section. Do not include this section
-when submitting your paper for review.
 
 % include your own bib file like this:
 %\bibliographystyle{acl}
 %\bibliography{acl2014}
 
 \begin{thebibliography}{}
+
+\bibitem[\protect\citename{Zhang and Ye}2008]{zhang2008generation}
+Zhang, Min and Ye, Xingyao
+\newblock 2008.
+\newblock {\em A generation model to unify topic relevance and lexicon-based sentiment for opinion retrieval}.
+\newblock {\em Proceedings of the 31st annual international ACM SIGIR conference on Research and development in information retrieval}, pages 411-418.
+\newblock ACM.
+
+\bibitem[\protect\citename{Mei et al.}2007]{mei2007topic}
+Mei, Qiaozhu and Ling, Xu and Wondra, Matthew and Su, Hang and Zhai, ChengXiang
+\newblock 2007.
+\newblock {\em Topic sentiment mixture: modeling facets and opinions in weblogs}.
+\newblock {\em Proceedings of the 16th international conference on World Wide Web}, pages 171-180.
+\newblock ACM.
+
+\bibitem[\protect\citename{Eguchi and Lavrenko}2006]{eguchi2006sentiment}
+Eguchi, Koji and Lavrenko, Victor
+\newblock 2006.
+\newblock {\em Sentiment retrieval using generative models}.
+\newblock {\em Proceedings of the 2006 conference on empirical methods in natural language processing}, pages 345-354.
+\newblock ACM.
+
+\bibitem[\protect\citename{Peter D. Turney}2002]{turney2002thumbs}
+Turney, Peter D
+\newblock 2002.
+\newblock {\em Thumbs up or thumbs down?: semantic orientation applied to unsupervised classification of reviews}.
+\newblock {\em Proceedings of the 40th annual meeting on association for computational linguistics}, pages 417-424.
+\newblock Association for Computational Linguistics.
+
+\bibitem[\protect\citename{Turney and Littman}2002]{turney2002unsupervised}
+Turney, Peter and Littman, Michael L
+\newblock 2002.
+\newblock {\em Unsupervised learning of semantic orientation from a hundred-billion-word corpus}.
+\newblock {\em Handbook of natural language processing}, volume-2, pages 627-666.
+\newblock CoRR, cs.LG/0212012.
+
+\bibitem[\protect\citename{Bing Liu}2010]{liu2010sentiment}
+Liu, Bing
+\newblock 2010.
+\newblock {\em Sentiment analysis and subjectivity}.
+\newblock {\em Handbook of natural language processing}, volume-2, pages 627-666.
+\newblock Chapman \& Hall.
 
 \bibitem[\protect\citename{Wang et al.}2007]{wang2007topical}
 Wang, Xuerui and McCallum, Andrew and Wei, Xing.
@@ -454,36 +320,6 @@ Blei, David M and Ng, Andrew Y and Jordan, Michael I.
 \newblock {\em Latent dirichlet allocation}
 \newblock {\em The Journal of machine learning research}, volume-3, pages 993-1022.
 \newblock JMLR.
-
-\bibitem[\protect\citename{Aho and Ullman}1972]{Aho:72}
-Alfred~V. Aho and Jeffrey~D. Ullman.
-\newblock 1972.
-\newblock {\em The Theory of Parsing, Translation and Compiling}, volume~1.
-\newblock Prentice-{Hall}, Englewood Cliffs, NJ.
-
-\bibitem[\protect\citename{{American Psychological Association}}1983]{APA:83}
-{American Psychological Association}.
-\newblock 1983.
-\newblock {\em Publications Manual}.
-\newblock American Psychological Association, Washington, DC.
-
-\bibitem[\protect\citename{{Association for Computing Machinery}}1983]{ACM:83}
-{Association for Computing Machinery}.
-\newblock 1983.
-\newblock {\em Computing Reviews}, 24(11):503--512.
-
-\bibitem[\protect\citename{Chandra \bgroup et al.\egroup }1981]{Chandra:81}
-Ashok~K. Chandra, Dexter~C. Kozen, and Larry~J. Stockmeyer.
-\newblock 1981.
-\newblock Alternation.
-\newblock {\em Journal of the Association for Computing Machinery},
-  28(1):114--133.
-
-\bibitem[\protect\citename{Gusfield}1997]{Gusfield:97}
-Dan Gusfield.
-\newblock 1997.
-\newblock {\em Algorithms on Strings, Trees and Sequences}.
-\newblock Cambridge University Press, Cambridge, UK.
 
 \end{thebibliography}
 
