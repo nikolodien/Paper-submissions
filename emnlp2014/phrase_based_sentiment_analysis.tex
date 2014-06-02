@@ -100,8 +100,10 @@ the class of the document.
 Rest of the paper is organized as follows. Section~\ref{survey} discusses related work
 in this area. Section~\ref{process} explains our process in detail. The experimental 
 setup is explained in Section~\ref{experiments}. Results of the experiments are presented
-is Section~\ref{results}. Section~\ref{discussion} discusses these results followed by
-conclusion in Section~\ref{conclusion}. Section~\ref{futurework} hints at some future work.
+in Section~\ref{results}. Section~\ref{discussion} discusses these results followed by
+explanation of the use of topic models for resource generation in Section~\ref{resource}.
+Section~\ref{conclusion} concludes and  hints to some future work are given in 
+Section~\ref{futurework}.
 
 
 \section{Related Word}\label{survey}
@@ -143,10 +145,11 @@ of space. Let us first list the basic steps to use any topic model for discoveri
 \subsection{Using Topic models}
 
 \begin{itemize}
-%  \itemsep0em
+ \itemsep0em
  \item Set number of topics.
  \item Remove stop-words as they do not belong to any topic.
  \item Estimate probabilities using some inference method.
+ \item Use the trained model for inference of topics in new documents.
 \end{itemize}
 
 \subsection{Using LDA for Sentiment Classification}
@@ -157,11 +160,12 @@ a prior information about the positivity and negativity of words to aid in the t
 detection. The steps are as follows.
 
 \begin{itemize}
-%  \itemsep0em
+ \itemsep0em
  \item Set number of topics, 2 in this case viz. positive and negative.
  \item Remove stop-words.
  \item Remove objective words as they won't affect sentiment.
  \item Gibbs Sampling with prior using lists of positive and negative words.
+ \item Use the trained model to classify a new document as positive or negative.
 \end{itemize}
 
 \subsection{Using Topical n-grams Model for Sentiment Classification}
@@ -169,7 +173,7 @@ detection. The steps are as follows.
 To make use of topical n-grams model for sentiment classification, we use a similar approach.
 
 \begin{itemize}
-%  \itemsep0em
+ \itemsep0em
  \item Set number of topics equal to 2.
  \item Remove stop-words.
  \item Remove objective words as they won't affect sentiment. The objective words in this
@@ -178,6 +182,7 @@ To make use of topical n-grams model for sentiment classification, we use a simi
  \item Gibbs Sampling with prior. The prior used in this case is more sophisticated and can
  handle both words and phrases. In case of words, it simply uses a list of positive and negative
  words. There are some rules to detect and assign topics to phrases which are explained next.
+ \item Use the trained model to classify a new document as positive or negative.
 \end{itemize}
 
 \subsubsection*{Rules for Topic assignment of phrases}
@@ -187,7 +192,7 @@ In the following rules, we mean topic when we say polarity. The use of polarity 
 the rules as they are concerned with subjectivity.
 
 \begin{enumerate}
-%  \itemsep0em
+ \itemsep0em
  \item If the first word in the bigram is a negation word and the second word is subjective then the polarity
  of the bigram is opposite to the polarity of the second word. \\
  \textbf{Examples:} \textit{won't like, won't regret, etc.}. Here, \textit{won't like} is assigned negative
@@ -234,7 +239,7 @@ BOW-SVM & 82.45\\
 LDA & 65.34\\
 LDA with prior & 80.19\\
 JST & 68.64\\
-JST with prior & 85.43\\
+JST with prior & 84.43\\
 Topical n-gram & 63.57\\
 Topical n-gram with prior & \textbf{87.32}\\
 \hline
@@ -258,12 +263,12 @@ to correctly classify reviews containing such words. Also, words like \textit{aw
 are often found in reviews. We thought that the accuracy might be increased if we could detect the correct subjective
 nature of these words and also the bigrams using them. For this, we propose an approach for resource generation using LDA.
 
-\section{Resource generation using LDA}
+\section{Resource generation using LDA}\label{resource}
 
 LDA can be used for resource generation of positive and negative words. The steps to do so are explained below.
 
 \begin{itemize}
-%  \itemsep0em
+ \itemsep0em
  \item Set number of topics equal to 3 i.e., positive, negative and objective. We do not remove the objective
  words in this case as we want to find out which of them are positive or negative.
  \item Remove stop-words.
@@ -273,15 +278,15 @@ LDA can be used for resource generation of positive and negative words. The step
 \end{itemize}
 
 The word lists we generated using this approach were used to test the systems using priors. The results for the same
-are shown in Table 2.
+are shown in Table 2. We can see a marginal increase in the accuracy in this setting.
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|l|c|}
 \hline \bf System & \bf Avg. accuracy (\%)\\ \hline
-LDA with prior & 82.19\\
-JST with prior & 87.43\\
-Topical n-gram with prior & \textbf{90.32}\\
+LDA with prior & 80.21\\
+JST with prior & 86.37\\
+Topical n-gram with prior & \textbf{89.83}\\
 \hline
 \end{tabular}
 \end{center}
@@ -290,9 +295,18 @@ Topical n-gram with prior & \textbf{90.32}\\
 
 \section{Conclusion}\label{conclusion}
 
+This paper made use of topical n-gram model for the binary sentiment classification problem. The motivation behind this
+approach was to use not only words but also phrases to classify documents. The model was trained with documents containing
+only subjective and negation words and bigrams formed by the combination of these. It also, made use of rules to 
+assign topics to words and bigrams in the intialization stage of estimation. Results using a prior show statistically 
+significant improvement over the JST model. The paper also shows the use of LDA for resource generation, prompted by 
+observations made during error analysis. The system shows marginal improvement in accuracy after using the resources
+generated by this technique.
 
 \section{Future Work}\label{futurework}
 
+The system is focused on bigrams at the moment. It can be extended to handle n-grams by adding rules to detect and assign
+topics. Instead of adding rules, we can make use of machine learning to detect the subjective nature of a phrase.
 
 % include your own bib file like this:
 %\bibliographystyle{acl}
