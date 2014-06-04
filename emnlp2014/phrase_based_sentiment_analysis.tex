@@ -52,8 +52,8 @@ tackle this classification problem.  Despite having a hierarchical structure,
 these generative models have a bag of words assumption. Due to this fact, 
 they tend to misclassify texts having sentiment in the form of phrases. LDA 
 and it's extensions don't work properly with phrases. To tackle this situation, 
-we propose an unsupervised approach to sentiment analysis using topical n-grams
-which have been shown to be effective with phrases. We train the topical n-grams 
+we propose an unsupervised approach to sentiment analysis using the topical n-grams model
+which has been shown to be effective with phrases. We train the topical n-grams 
 model using two topics i.e., positive and negative, list of positive and negative 
 words, and rules to detect positive and negative phrases. New documents are then 
 classified using this trained model. The system gives better results than the 
@@ -88,17 +88,17 @@ words making up that phrase. There is a subtle difference between a phrase and c
 of words. Not all collocations of words can be considered as a phrase. We need a 
 model which takes into account phrases to completely understand the meaning of the text.
 
-Topical n-grams as described by Wang et al.~\shortcite{wang2007topical} is one such generative 
+Topical n-grams model proposed by Wang et al.~\shortcite{wang2007topical} is one such generative 
 model which takes into account not only co-occurrences but also collocations of words. It 
 also decides whether a particular collocation of words should be considered as a phrase or not. 
-We train this model using 2 topics viz. positive and negative, using prior list of positive 
+We train this model using 2 topics viz. positive and negative, using a prior list of positive 
 and negative words, and some rules to identify the subjective nature of phrases. The phrases
 in our experiments are restricted to bigrams. We then use this trained model to infer the topic
 distribution for new documents. The topic having higher proportion is considered to be
 the class of the document.
 
 Rest of the paper is organized as follows. Section~\ref{survey} discusses related work
-in this area. Section~\ref{process} explains our process in detail. The experimental 
+in this area. Section~\ref{process} explains our approach in detail. The experimental 
 setup is explained in Section~\ref{experiments}. Results of the experiments are presented
 in Section~\ref{results}. Section~\ref{discussion} discusses these results followed by
 explanation of the use of topic models for resource generation in Section~\ref{resource}.
@@ -106,7 +106,7 @@ Section~\ref{conclusion} concludes and  hints to some future work are given in
 Section~\ref{futurework}.
 
 
-\section{Related Word}\label{survey}
+\section{Related Work}\label{survey}
 
 There are many supervised, semi-supervised and unsupervised approaches to solve the 
 sentiment analysis problem. One supervised method based on n-gram analysis is explained by
@@ -156,9 +156,9 @@ of space. Let us first list the basic steps to use any topic model for discoveri
 \subsection{Using LDA for Sentiment Classification}
 
 To use basic LDA as a sentiment classifier, we add one more step to remove objective words.
-Also, during Gibbs sampling the first step assigns topics randomly to words. We introduce
-a prior information about the positivity and negativity of words to aid in the topic
-detection. The steps are as follows.
+Also, usually during Gibbs sampling the first step assigns topics randomly to words. Instead, we
+introduce a prior information about the positivity and negativity of words to assign topics to 
+words initially. The steps are as follows.
 
 \begin{itemize}
  \itemsep0em
@@ -180,7 +180,7 @@ To make use of topical n-grams model for sentiment classification, we use a simi
  \item Remove objective words as they won't affect sentiment. The objective words in this
  case do not include the negation words like \textit{don't, doesn't, won't, no}, etc. This is to
  ensure that we can catch negation of polarity when they are used with subjective words.
- \item Gibbs Sampling with prior. The prior used in this case is more sophisticated and can
+ \item Apply Gibbs Sampling with prior. The prior used in this case is more sophisticated and can
  handle both words and phrases. In case of words, it simply uses a list of positive and negative
  words. There are some rules to detect and assign topics to phrases which are explained next.
  \item Use the trained model to classify a new document as positive or negative.
@@ -218,7 +218,7 @@ n-gram were made to take into account the prior information.
 
 \subsection*{Dataset}
 
-To create the dataset we used of the amazon reviews dataset provided by SNAP \footnote{http://snap.stanford.edu/}.
+To create the dataset we used the amazon reviews dataset provided by SNAP \footnote{http://snap.stanford.edu/}.
 These reviews are not tagged with sentiment but they have ratings from 1 to 5. We used this information to create
 a sentiment tagged corpus. The reviews with ratings less than 3 were tagged as negative and others were tagged
 as positive. We conducted the experiments on 6,00,000 reviews containing equal number of positive and negative
@@ -274,7 +274,7 @@ LDA can be used for resource generation of positive and negative words. The step
  words in this case as we want to find out which of them are positive or negative.
  \item Remove stop-words.
  \item Gibbs Sampling with prior using lists of positive and negative words. In the initial step, words present 
- in the list are assigned that specific topic bu
+ in the list are assigned that specific topic but the other words as assigned a topic randomly.
  \item Get the top words in the positive and negative topics.
 \end{itemize}
 
@@ -307,7 +307,7 @@ generated by this technique.
 \section{Future Work}\label{futurework}
 
 The system is focused on bigrams at the moment. It can be extended to handle n-grams by adding rules to detect and assign
-topics. Instead of adding rules, we can make use of machine learning to detect the subjective nature of a phrase.
+topics. Instead of adding rules, we can make use of machine learning techniques detect the subjective nature of a phrase.
 
 % include your own bib file like this:
 %\bibliographystyle{acl}
