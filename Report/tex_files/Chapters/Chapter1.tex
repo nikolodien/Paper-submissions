@@ -1,0 +1,82 @@
+% Chapter 1
+
+\chapter{Introduction} % Main chapter title
+
+\label{Chapter1} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+\lhead{Chapter 1. \emph{Introduction}} % This is for the header on each page - perhaps a shortened title
+
+\par 
+\textit{Sentiment Analysis} is the technique of detecting sentiment/opinion behind a \textit{word, sentence, collection of sentences, documents,} 
+and even a \textit{collection of documents} in some cases. Here, \textit{word, sentence, collection of sentences, documents,} and \textit{collection of 
+documents} can be termed as chunks of text which determines granularity of the analysis. We can make use of the general term 
+\emph{text} when the discussion applies to all these chunks and specify the exact granularity when required. \textit{Sentiment Analysis} 
+might also involve classifying \emph{text} as either \emph{Objective} (factual information) or \emph{Subjective} (expressing some 
+sentiment or opinion). This is called as \textit{Subjectivity Analysis}. It can also be considered as preprocessing for \textit{Sentiment Analysis} in some cases. 
+But \textit{Subjectivity Analysis} is considered a task within \textit{Sentiment Analysis}. \textit{Sentiment analysis} is also known as \textit{Opinion 
+Mining} and these two terms are used quite interchangeably.
+
+\par
+
+In most cases, \textit{Sentiment Analysis} is a binary classification task in which a \emph{text} is classified as either positive or negative.
+Examples of binary classification are \textit{movie reviews, product reviews, etc}. \textit{Ternary Classification}, wherein the \emph{text} is classified
+as positive, negative or objective also has many applications. 
+
+\par
+
+This field is considerably new and is gaining of lot of attention. \textit{Movie reviews} of critics are classified as positive or negative
+by using this technique. Same is the case with product reviews. \textit{tweets, comments, etc.} are analyzed to detect the positive or negative
+sentiment behind them and sentiment about a particular entity. \textit{IR} also makes use of \textit{SA} these days to filter out subjective information
+and retrieve only the objective data. There is also a motivation for sentiment aware IR in which documents of relevant sentiment 
+(either positive or negative) are fetched. 
+
+\section{Motivation}
+\par
+The \textit{Motivation} behind this research is to study sentiment analysis in general and the role of sentiment analysis in information retrieval 
+in particular. \textit{Sentiment Analysis} has lot of applications as discussed. But, the assumption made before applying this technique in
+many cases is that subjective data is available. This assumption is unrealistic. Subjective text has to be retrieved from the web. But, most
+of the algorithms in \textit{Information Retrieval} are designed to fetch information relevant to a specific topic or a topic set. If 
+\textit{Subjectivity Analysis} is combined with \textit{IR} then we can fetch subjective \textit{text}. Also, retrieval of \textit{text} of 
+a specific sentiment is required in many applications. Thus, combining \textit{SA} with \textit{IR} to serve the needs of many applications
+is the motivation behind this report.
+
+
+\section{Problem Statement}
+\par
+The aim of this project is to aid retrieval of subjective \textit{text} of the desired sentiment by making use of \textit{Sentiment Analysis}
+in \textit{Information Retrieval}. To achieve this a joint model of topic and sentiment has to be designed, implemented and compared with
+other existing approaches. Also, the use of this model in sentiment classification of \textit{text} has to be evaluated.
+
+\section{Contribution}
+\par
+Following contributions have been made till now:
+\begin{enumerate}
+ \item Implemented two systems using \citep*{apachelucene}, \citep*{sentiwordnet}, and \citep*{stanfordpostagger} for sentiment aware information
+ retrieval to get a gist of the problem.
+ \item Studied \textit{LDA}, Gibbs Sampling, and Inferencing using \textit{LDA}.
+ \item Evaluated \textit{LDA} using implementation in \citep*{mallet}.
+ \item Studied several joint sentiment topic models.
+\end{enumerate}
+
+%----------------------------------------------------------------------------------------
+
+\section{Roadmap}\label{sec:roadmap}
+% To be changed later
+\par
+This report gives the problem statement and the contributions in \cref{Chapter1}. \cref{Chapter2} starts with a psychological viewpoint of \textit{sentiment}. 
+This is followed by formal problem definition, and then types of \textit{SA}, challenges in \textit{SA}, and some applications of \textit{SA} are
+listed. \cref{Chapter2} also explains basic machine learning techniques and their applications in \textit{SA}. \cref{Chapter3} starts
+with basics of \textit{IR}. Then it moves on to discuss the various \textit{text modeling} approaches prevalent in \textit{IR} with a focus
+on \textit{LDA}. \cref{Chapter4} discusses two models which combine sentiment and topics. The pros and cons of these models have been discussed. 
+\cref{Chapter5} describes two systems which make use of sentiment analysis in information retrieval. Also, an experiment to evaluate \textit{LDA}
+is described. \cref{Chapter6} concludes and hints on some future work.
+
+\section*{SUMMARY}
+
+In this chapter, the problem statement was introduced along with the motivation. The significant contributions done so far have been listed.
+The structure of the report has been described in the \sref{sec:roadmap}.
+
+In the next chapter we will learn \textit{Sentiment Analysis} and several machine learning techniques and how these are used in \textit{Sentiment Analysis}.
+
+\clearpage
+
