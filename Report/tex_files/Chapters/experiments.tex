@@ -1,0 +1,357 @@
+\chapter{Experiments} % Main chapter title
+
+\label{experiments} % For referencing the chapter elsewhere, use \ref{Chapter5} 
+
+\lhead{Chapter 5. \emph{Experiments}} % This is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+
+
+In this chapter, we will show how \textit{LDA} was evaluated to test the accuracy of unsupervised approaches in general. Then, the use of topic
+models to perform the sentiment classification task is explained. At the end, the system using deep semantics is explained.
+
+\section{Evaluation of LDA}
+
+Evaluation of topic models has been discussed at length in \citep*{wallach2009evaluation}. A natural evaluation metric discussed in 
+\citep*{wallach2009evaluation} is finding out the probability of a held-out document given a trained model. Topic modeling is a useful
+tool for analyzing unstructured text collections. Evaluation of topic models is difficult due to their unsupervised nature. For some 
+applications, there might be extrinsic tasks such as information retrieval for which performance can be evaluated. There is a need for 
+a universal method that measures generalization capability of a topic model in a way that is accurate, computationally efficient and
+independent of a specific application. \textit{LDA} can be evaluated by 1) Information retrieval accuracy or 2) by estimating the probability
+of unseen held-out documents given some training documents. We propose a new evaluation method as follows.
+
+\subsection*{Evaluation method}
+
+\begin{enumerate}
+ \item Download documents.
+ \item Tag every document with a topic to get a tagged corpus
+ \item Held-out some documents for testing before training the model
+ \item Train the topic model using the untagged corpus (obtained after removing the tags)
+ \item Now, use the trained model to infer topic distribution for the testing documents
+ \item Check whether the topic having highest proportion matches the tag of the document
+\end{enumerate}
+
+5-fold cross validation was used in this case. 1273 documents were downloaded from DMOZ \citep*{dmoz}. Computers, films, real estate, cooking and
+sports were the 5 topics chosen. The implementation in Mallet was used to conduct the experiment.
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+  \hline
+  Topic & No. of files \\ \hline
+  Computers & 164 \\ \hline
+  Sports & 213 \\ \hline
+  Cooking & 251 \\ \hline
+  Real Estate & 261 \\ \hline
+  Films & 384 \\ \hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 7.1 Number of files per topic
+\end{center}
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+  \hline
+  Average accuracy & 20.867 \\ \hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 7.2 Average Accuracy 
+\end{center}
+
+\subsection*{Discussion}
+
+\par
+The average accuracy after 5-fold cross-validation on this corpus was 20.867, which is very low. The reason for this is the short-length
+of the documents used. \textit{LDA} works on the principle of co-occurrence. If we look at \eref{eqn:fullconditionalfinal}, there is a
+factor for words and another for documents. Probabilities are higher for assignments that "don't break document boundaries", that is, words 
+appearing in the same document have a slightly higher odds of ending up in the same topic. The same holds for document assignments, they to 
+a degree follow "word boundaries". These effects mix up and spread over clusters of documents and words, eventually. Due to the short length 
+of the documents, words from the same topic may not always co-occur. Also, there is chance of them co-occurring with words from other topics 
+also which results in bad clustering. Some words belong to more than one topic due to this. Due to this, the clustering of documents as whole 
+in this case is not good. 
+
+\par
+Also, the evaluation method used is very strict. If it is a bit lenient, the accuracy can be increased. A new method
+called weighted evaluation can be used in this case.
+
+\subsection*{Weighted Evaluation}
+
+Weighted evaluation is based on the fact that we get a topic distribution for each testing document. This topic distribution is arranged
+in descending order of topic proportions. The idea is to assign weights according to the rank given to the original tag of the document. 
+
+\subsection*{Weighted Evaluation Algorithm}
+
+\begin{alltt}
+matches=0, counts=0
+For each document
+  Find topic distribution
+  Switch(tag):
+    case(topic1): matches += 1
+    case(topic2): matches += 0.8
+    case(topic3): matches += 0.6
+    case(topic4): matches += 0.4
+    case(topic5): matches += 0.2
+    counts++
+Accuracy = matches/counts
+\end{alltt}
+
+\subsection*{Results}
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c| }
+  \hline
+  Fold & Matches & Counts & Accuracy (in percentage) \\ \hline
+  Fold 1 & 156 & 255 & 61.4 \\ \hline
+  Fold 2 & 156 & 255 & 61.4 \\ \hline
+  Fold 3 & 170 & 255 & 66.9 \\ \hline
+  Fold 4 & 152 & 255 & 59.6 \\ \hline
+  Fold 5 & 161 & 253 & 63.9 \\ \hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 7.3 Accuracy for each testing fold 
+\end{center}
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+  \hline
+  Average accuracy & 62.6 \\ \hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 7.4 Weighted Evaluation Average Accuracy 
+\end{center}
+
+\subsection*{Discussion}
+
+\par
+As we can see the accuracy has increased after we used weighted evaluation. This kind of evaluation needs to be used in many systems including
+transliteration where the most probable word needs to be predicted. The rank of the actual word may be further down. This doesn't mean that the
+system is giving wrong output. Therefore, a more lenient approach would be better in this case. 
+
+\par
+The accuracy has increased but still is unsatisfactory. 62 \% accuracy in this case implies that given a document, there is 62 \%
+chance that the main topic of the document will be ranked in top 5. As we have used only 5 topics, this result is not that significant. Using
+more number of topics will lead to better insights. 
+
+\par 
+If we consider the clustering to be effective only till the third rank, we get accuracies as shown in the table.
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c| }
+  \hline
+  Fold & Matches & Counts & Accuracy (in percentage) \\ \hline
+  Fold 1 & 156 & 255 & 50.9 \\ \hline
+  Fold 2 & 156 & 255 & 50.1 \\ \hline
+  Fold 3 & 170 & 255 & 57.4 \\ \hline
+  Fold 4 & 152 & 255 & 46.7 \\ \hline
+  Fold 5 & 161 & 253 & 53.5 \\ \hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 7.5 Accuracy for each testing fold (Till 3rd rank)
+\end{center}
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+  \hline
+  Average accuracy & 51.7 \\ \hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 7.6 Average Accuracy (Till 3rd rank)
+\end{center}
+
+\par 
+
+This means that given a document, there is 51.7 \% chance that the main topic of the document will be ranked in top 3. It is known
+that \textit{LDA} performs better with more number of topics. So, increasing the number of topics while performing the evaluation can 
+lead to more better results. 
+
+A list of high probability words for each topic was prepared which is given in the following table. 
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| }
+  \hline \hline
+  Computer & Films & Cooking & Real Estate & Sports \\ \hline \hline
+  site & film &	recipes & services & reviews \\ \hline
+  software & information & recipe & real & news \\ \hline
+  free & offers & including & company &	interviews\\ \hline
+  systems & production & collection & estate & information \\ \hline
+  programming & courses & tips & includes & features \\ \hline
+  research & links & source & commercial & current \\ \hline
+  resources & videos & production & based & tennis \\ \hline
+  code & television & baking & development & running \\ \hline
+  information &	cinema & breakfast & title & tournament \\ \hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 7.7 High probability words in each topic 
+\end{center}
+
+As we can see, the high probability words in each topic are good but due to the short length, results were not that good. 
+
+\section{Using Topic models for Sentiment Analysis}
+
+Analysis was performed for the binary sentiment classification task. The language used in this case was English.
+We conducted experiments on 4 models, BOW using SVM, LDA ~\citep*{blei2003latent}, JST ~\citep*{lin2009joint}, and 
+Topical n-gram model ~\citep*{wang2007topical}. We used two settings for the topic models, with and without prior. 
+The word lists used are those specified in ~\citep*{liu2010sentiment}. The implementations of SVM, LDA and Topical
+n-gram in Mallet \footnote{http://mallet.cs.umass.edu/} have been used for evaluation. For JST, we have used the 
+implementation provided by the authors \footnote{https://github.com/linron84/JST}. The default settings for the
+hyper-parameters were used in all these implementations. Some changes in the implementations of LDA and Topical
+n-gram were made to take into account the prior information.
+
+\subsection*{Dataset}
+
+To create the dataset we used the amazon reviews dataset provided by SNAP \footnote{http://snap.stanford.edu/}.
+These reviews are not tagged with sentiment but they have ratings from 1 to 5. We used this information to create
+a sentiment tagged corpus. The reviews with ratings less than 3 were tagged as negative and others were tagged
+as positive. We conducted the experiments on 6,00,000 reviews containing equal number of positive and negative
+reviews.
+
+\subsection*{Results}\label{results}
+
+The results presented here are for 10-fold cross validation. For the topic models, due to the randomness involved 
+during sampling, the best result obtained for each fold has been used for calculating the average. The Bag of words 
+system performs better than all the models when no prior information is provided. The performance of topic models 
+significantly increases when prior information is provided. Our approach to use Topical n-gram outperforms all the 
+systems when a prior is used.
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline \bf System & \bf Avg. accuracy (\%)\\ \hline
+BOW-SVM & 82.45\\
+LDA & 65.34\\
+LDA with prior & 80.19\\
+JST & 68.64\\
+JST with prior & 84.43\\
+Topical n-gram & 63.57\\
+Topical n-gram with prior & \textbf{87.32}\\
+\hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 7.8 Evaluation of Topic models for Binary sentiment classification.
+\end{center}
+
+\subsection*{Discussion}\label{discussion}
+
+The performance of our system is better due to the capacity to handle phrases. All the other systems, consider each word
+separately. The performance improvement over JST is 3\% which is statistically significant. Though the system performs
+better for this dataset, it still has some obvious limitations. The system highly depends on the rules used for
+initial assignment of topics which is evident from the results. These rules don't apply to all the bigrams. Let us
+consider, the bigram \textit{insanely good}. In this case, the first word is negative and second word is positive. The rules
+will assign a negative polarity to this bigram. But in this phrase \textit{insanely} is used to increase the intensity of 
+\textit{good}. The rules apply only for bigrams, we need to add more rules to handle n-grams. A phrase like \textit{I don't
+think it's good} won't be handled by the system. During error analysis, we also found that some words like \textit{engrossing,
+blockbuster, bravo, etc.}, are not present in the word lists. These words convey a positive sentiment but our system fails
+to correctly classify reviews containing such words. Also, words like \textit{awsome} which is spelling mistake of \textit{awesome}
+are often found in reviews. We thought that the accuracy might be increased if we could detect the correct subjective
+nature of these words and also the bigrams using them. For this, we proposed  an approach for resource generation using LDA.
+
+The word lists we generated using this approach were used to test the systems using priors. The results for the same
+are shown in Table 2. We can see a marginal increase in the accuracy in this setting.
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline \bf System & \bf Avg. accuracy (\%)\\ \hline
+LDA with prior & 80.21\\
+JST with prior & 86.37\\
+Topical n-gram with prior & \textbf{89.83}\\
+\hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 7.9 Evaluation using resources generated using \textit{LDA}
+\end{center}
+
+In the next section, we explain the experiments done using deep semantics.
+
+\section{Deep Semantics for sentiment analysis}
+
+Analysis was performed for monolingual binary sentiment classification task. The language used in this case was \textit{English}. The comparison was done between 5 systems 
+viz. System using words as features, WordNet sense based system as given in \citep*{balamurali2011harnessing}, Clusters based system as described in ~\citep*{arhaves}, 
+Discourse rules based system as given in \citep*{mukherjee2012sentiment}, and the UNL rule based system. Two polarity datasets were used to perform the experiments. 
+    
+\begin{enumerate}
+  \item \underline{EN-TD:} English Tourism corpus as used in \citep*{ye2009sentiment}. It consists of 594 positive and 593 negative reviews.
+  \item \underline{EN-PD:} English Product (music albums) review corpus \citep*{blitzer2007biographies}. It consists of 702 positive and 702 negative 
+  reviews. 
+\end{enumerate}
+   
+For the WordNet sense, and Clusters based systems, a manually sense tagged version of the (EN-PD) has been used. Also, a automatically sense tagged version of 
+(EN-TD) was used on these systems. The tagging in the later case was using an automated WSD engine, trained on a tourism domain \citep*{balamurali2013lost}.
+The results reported for supervised systems are based on 10-fold cross validation.
+   
+\subsection*{Results}\label{results}
+
+\begin{center}
+  \begin{tabular}[h]{|l|c|c|}
+   \hline
+   \textbf{System} & \textbf{EN-TD} & \textbf{EN-PD} \\ \hline \hline
+   Bag of Words & 85.53 & 73.24 \\ \hline
+   Synset-based & 88.47 & 71.58 \\ \hline
+   Cluster-based & \textbf{95.20} & 79.36 \\ \hline
+   Discourse-based & 71.52 & 64.81 \\ \hline
+   UNL rule-based & 86.08 & \textbf{79.55} \\ \hline
+   \hline
+  \end{tabular}
+\end{center}
+\begin{center}
+ Table 7.10 Classification accuracy (in \%) for monolingual binary sentiment classification
+\end{center}
+
+  
+The results for monolingual binary sentiment classification task are shown in Table ~\ref{table:accuracy}. The results reported are the best results obtained in 
+case of supervised systems. The cluster based system performs the best in both cases. The UNL rule-based system performs better only than the bag of words
+and discourse rule based system. For EN-PD ( music album reviews ) dataset, the UNL based system outperforms every other system . These results are very promising 
+for a rule-based system. The difference between accuracy for positive and negative reviews for the rule-based systems viz. Discourse rules based and UNL rules based 
+is shown in Table ~\ref{table:accuracyposneg}. It can be seen that the Discourse rules based system performs slightly better than the UNL based system for positive 
+reviews. On the other hand, the UNL rules based system outperforms it in case of negative reviews by a huge margin. 
+  
+\begin{center}
+  \begin{tabular}[h]{l|c|c|c|c|}
+   \cline{2-5}
+    & \multicolumn{2}{|c|}{\textbf{EN-TD}} & \multicolumn{2}{|c|}{\textbf{EN-PD}} \\ \hline
+    \textbf{System} & \textbf{Pos} & \textbf{Neg} & \textbf{Pos} & \textbf{Neg} \\ \hline \hline
+    Discourse rules & 94.94 & 48.06 & \textbf{92.73} & 36.89 \\ \hline
+    UNL rules & \textbf{95.72} & \textbf{76.44} & 90.75 & \textbf{68.35} \\ \hline
+   \hline
+  \end{tabular}
+\end{center} 
+\begin{center}
+ Table 7.11 Classification accuracy (in \%) for positive and negative reviews
+\end{center}
+
+\subsection*{Discussion}
+
+The UNL generator used in this case is the bottleneck in terms of performance. Also, it makes use of the standard NLP tools viz. parsing, co-reference resolution, etc. 
+to assign the proper semantic roles in the given \textit{text}. It is well known fact that these techniques work properly only on structured data. The language used in 
+the reviews present in both the datasets is unstructured in considerable number of cases. The UNL generator is still in its infancy and cannot handle \textit{text} 
+involving special characters. Due to these reasons, a proper UNL graph is not generated in some cases. Also, it is not able to generator proper UNL graphs for even well 
+structured sentences like \textit{"It is not very good"}. In this case, the UW,  \textit{good} should have an attribute \textit{@not} which implies that it is used in 
+a negative sense. On the contrary, the UNL generator does not assign any such attribute to it, leading to incorrect classification. As a result of all these things, the 
+classification accuracy is low.
+
+Negative reviews have certain characteristics which make them difficult to classify. Sentences like \textit{"It is good but could be better"} are very common in negative 
+reviews. Some reviews are just to raise caution. A negative review about \textit{Las Vegas} contained the sentence, \textit{"Do not go to Las Vegas alone if you are female"}. 
+Some reviews contain mixed opinions. For example, \textit{"Beautiful Architecture. Expensive food"}. We stated the importance of time in sentiment analysis in \cref{unl}. 
+Examples of such a sentence is \textit{"A place I used to love. Not anymore"}. To infer that the sentence, \textit{"The hotel room had a Queen-sized bed"} has a negative 
+sentiment is not possible without proper domain knowledge. Sentiment is domain dependent as given in ~\citep*{liu2010sentiment}. The adjective \textit{cheesy} might be positive for a 
+food item but is definitely negative in cases like \textit{"The place is full of cheesy shows"}. Reviewers often criticize a place/thing by praising other places/things. In 
+the EN-TD dataset, negative reviews were full of sentences like \textit{"If you want dirt, go to L.A. . If you want peace, go to Switzerland."}. \textit{"I love New York 
+especially the 'Lovely brown fog'"} and \textit{"I adore the 'phony fantasy-land' that Vegas is"} are examples of sarcasm. Sarcasm is a very difficult problem to tackle. 
+Some related works can be found in ~\citep*{carvalho2009clues} and ~\citep*{gonzalez2011identifying}.
+
+In some cases, the reviewers make use of their native language and expressions. This is a big problem for the task of monolingual sentiment classification. From this discussion, it is clear that two major points of concern are unstructured language and hidden sentiment
+
+\section*{Summary}
+
+In this chapter, we first evaluated \textit{LDA} for the binary sentiment classification task. After that, we evaluated the topic models in different settings against
+each other and the bag of words model. The system using deep semantics was compared with some state of the art systems for the same task but a different dataset.
+
+In the next chapter, we conclude and comment on some future work.
+
+\clearpage
