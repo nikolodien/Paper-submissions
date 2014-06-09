@@ -104,7 +104,7 @@
 \end{flushright}
 \end{minipage}\\[3cm]
  
-\large \textit{A report submitted in partial fulfilment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
+\large \textit{A report submitted in partial fulfillment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
 \textit{in the}\\[0.4cm]
 \deptname\\[2cm] % Research group name and department name
  
@@ -189,17 +189,17 @@ and suggestions.
 
 \abstract{\addtocontents{toc}{\vspace{1em}} % Add a gap in the Contents, for aesthetics
 Sentiment Analysis is mainly the classification of text into two classes viz. positive and negative. Joint sentiment and topic models have been used 
-to tackle this classification problem.  Despite having a hierarchical structure, these generative models have a bag of words assumption. Due to this
-fact, they tend to misclassify texts having sentiment in the form of phrases. LDA and it's extensions don't work properly with phrases. To tackle this
+to tackle this classification problem. Despite having a hierarchical structure, these generative models have a bag of words assumption. Due to this
+fact, they tend to misclassify texts having sentiment in the form of phrases. \textit{LDA} and it's extensions don't work properly with phrases. To tackle this
 situation, we propose an unsupervised approach to sentiment analysis using topical n-grams which have been shown to be effective with phrases. We train
-the topical n-grams model using two topics i.e., positive and negative, list of positive and negative words, and rules to detect positive and negative
+the topical n-grams model using two topics i.e., positive, and negative, list of positive and negative words, and rules to detect positive and negative
 phrases. New documents are then classified using this trained model. The system gives better results than the existing Joint Sentiment Topic model. We
-also propose an approach to generate list of positive and negative words using LDA. Another aspect of this research is to make use of deep semantics 
+also propose an approach to generate list of positive and negative words using \textit{LDA}. Another aspect of this research is to make use of deep semantics 
 for sentiment analysis. Existing methods for sentiment analysis use supervised approaches which take into account all the subjective words and or phrases.
 Due to this, the fact that not all of these words and phrases actually contribute to the overall sentiment of the \textit{text} is ignored. We propose an
-unsupervised rule-based approach using deep semantic processing to identify only relevant subjective terms. We generate a UNL graph for the input \textit{text}.
-Rules are applied on the graph to extract relevant terms. The sentiment expressed in these terms is used to figure out the overall sentiment of the 
-\textit{text}. Results on binary sentiment classification have shown promising results.
+unsupervised rule-based approach using deep semantic processing to identify only relevant subjective terms. We generate a \textit{UNL} graph for the input 
+\textit{text}. Rules are then applied on the graph to extract relevant terms. The sentiment expressed in these terms is used to figure out the overall 
+sentiment of the \textit{text}. Results on binary sentiment classification have shown promising results.
 
 }
 
@@ -257,12 +257,14 @@ Rules are applied on the graph to extract relevant terms. The sentiment expresse
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
 
-\input{./Chapters/Chapter1}
-\input{./Chapters/Chapter2} 
-\input{./Chapters/Chapter3}
-\input{./Chapters/Chapter4} 
-\input{./Chapters/Chapter5} 
-\input{./Chapters/Chapter6}
+\input{./Chapters/introduction}
+\input{./Chapters/sa} 
+\input{./Chapters/ir}
+\input{./Chapters/topicmodeledsa}
+% \input{./Chapters/topicalngram}
+\input{./Chapters/unl}
+% \input{./Chapters/experiments} 
+\input{./Chapters/conclusions}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

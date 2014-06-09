@@ -73,7 +73,7 @@ As can be seen from the formal definition of sentiment analysis and the motivati
 of the \textit{text}. To solve this problem, we can make use of semantic roles in the \textit{text}. Semantic role is the underlying relationship that the underlying
 participant has with the main verb. To identify the semantic roles, we make use of UNL in our approach.
   
-\subsection*{UNL (Universal Networking Language)}
+\subsection{UNL (Universal Networking Language)}
 
 UNL is declarative formal language specifically designed to represent semantic data extracted from natural language texts. In UNL, the information is represented by 
 a semantic network, also called UNL graph. UNL graph is made up of three discrete semantic entities, Universal Words, Universal Relations, and Universal Attributes. 
@@ -82,7 +82,7 @@ let us consider an example. UNL graph for \textit{"I like that bad boy"} is as s
   
 \includegraphics[width=\textwidth]{unlexample.png} 
 \begin{center}
- Figure 6.1 UNL Example
+ Figure 5.1 UNL Example
 \end{center}
   
 Here, \textit{"I"}, \textit{"like"}, \textit{"bad"}, and \textit{"boy"} are the UWs. \textit{"agt"} (agent), \textit{"obj"} (patient), and \textit{"mod"} (modifier) are the
@@ -98,21 +98,26 @@ Syntax of a UNL relation is as shown below,
   
 Where, \(<rel>\) is the name of the relation, \(<scope>\) is the scope of the relation, \(<source>\) is the UW that assigns the relation, and \(<target>\) is the UW that receives the relation \\
   
-We have considered the following Universal relations in our approach,\\ 
-1) \underline{\textit{agt} relation} \(:\) \textit{agt} stands for agent. An agent is a participant in action that provokes a change of state or location. The \textit{agt} 
+We have considered the following Universal relations in our approach,
+
+\begin{enumerate}
+
+\item \underline{\textit{agt} relation} \(:\) \textit{agt} stands for agent. An agent is a participant in action that provokes a change of state or location. The \textit{agt} 
 relation for the sentence \textit{"John killed Mary"} is \textit{agt( killed , John )}. This means that the action of \textit{killing} was performed by \textit{John}.\\
-2) \underline{\textit{obj} relation} \(:\) \textit{obj} stands for patient. A patient is a participant in action that undergoes a change of state or location. The \textit{obj} 
+\item \underline{\textit{obj} relation} \(:\) \textit{obj} stands for patient. A patient is a participant in action that undergoes a change of state or location. The \textit{obj} 
 relation for the sentence \textit{"John killed Mary"} is \textit{obj( killed , Mary )}. This means that the patient/object of \textit{killing} is \textit{Mary}.\\
-3) \underline{\textit{aoj} relation} \(:\) \textit{aoj} stands for object of an attribute. In the sentence \textit{"John is happy"}, the \textit{aoj} relation is 
+\item \underline{\textit{aoj} relation} \(:\) \textit{aoj} stands for object of an attribute. In the sentence \textit{"John is happy"}, the \textit{aoj} relation is 
 \textit{aoj( happy , John )}.\\
-4) \underline{\textit{mod} relation} \(:\) \textit{mod} stands for modifier of an object. In the sentence \textit{"a beautiful book"}, the \textit{mod} relation is 
+\item \underline{\textit{mod} relation} \(:\) \textit{mod} stands for modifier of an object. In the sentence \textit{"a beautiful book"}, the \textit{mod} relation is 
 \textit{mod( book , beautiful )}.\\
-5) \underline{\textit{man} relation} \(:\) \textit{man} relation stands for manner. It is used to indicate how the action, experience or process of an event is carried out. 
+\item \underline{\textit{man} relation} \(:\) \textit{man} relation stands for manner. It is used to indicate how the action, experience or process of an event is carried out. 
 In the sentence \textit{"The scenery is beautifully shot"}, the \textit{man} relation is \textit{man( beautifully , shot )}.\\
-6) \underline{\textit{and} relation} \(:\) \textit{and} relation is used to state a conjunction between two entities. In the sentence \textit{"Happy and cheerful"}, 
+\item \underline{\textit{and} relation} \(:\) \textit{and} relation is used to state a conjunction between two entities. In the sentence \textit{"Happy and cheerful"}, 
 the \textit{and} relation is \textit{and(Happy,cheerful)}.
     
-\subsection*{Architecture}
+\end{enumerate}    
+    
+\subsection{Architecture}
   
 As shown in the \textit{UNL} example, the modifier \textit{"bad"} is associated with the object of the main verb. It shouldn't affect the sentiment of the main agent. 
 Therefore, we can ignore the modifier relation of the main object in such cases. After doing that, the sentiment of this sentence can be inferred to be positive.
@@ -124,42 +129,137 @@ by this. A more robust version of the UNL generator will certainly allow the sys
   
 \includegraphics[width=\textwidth]{unlusage.png} 
 \begin{center}
- Figure 6.2 Architecture
+ Figure 5.2 Architecture
 \end{center}
   
-\subsection*{Rules}
+\subsection{Rules}
 
 There is a separate rule for each relation. For each UW (Universal word) considered, if it has a \textit{@not} attribute then its polarity is reversed. Rules used by the system
-are as follows,\\
-1) If a given UW is source of the \textit{agt} relation, then its polarity is added to the overall polarity of the text.
+are as follows,
+
+\begin{enumerate}
+
+\item If a given UW is source of the \textit{agt} relation, then its polarity is added to the overall polarity of the text.
 \underline{e.g.,} \textit{"I like her"}. Here, the agt relation will be \textit{agt ( like , I )}. The polarity of like being positive, the overall polarity of the text is positive.
 \underline{e.g,} \textit{"I don't like her"}. Here the agt relation will be \textit{agt ( like@not , I )}. The polarity of like is positive but it has an attribute \textit{@not}
 so its polarity is negative. The overall polarity of the text is negative in this case. \\
-2) If a given UW is source or target of the \textit{obj} relation and has the attribute \textit{@entry} then its polarity is added to the overall polarity of the text. This rule 
+\item If a given UW is source or target of the \textit{obj} relation and has the attribute \textit{@entry} then its polarity is added to the overall polarity of the text. This rule 
 merely takes into account the main verb of the sentence into account, and the it's is polarity considered.
 \underline{e.g.,} \textit{"I like her"}, here the obj relation will be \textit{obj ( like@entry , her )}. The polarity of like being positive, the overall polarity of the text is positive \\
-3) If a given UW is the source of the \textit{aoj} relation and has the attribute \textit{@entry} then its polarity is added to the overall polarity of the text.
+\item If a given UW is the source of the \textit{aoj} relation and has the attribute \textit{@entry} then its polarity is added to the overall polarity of the text.
 \underline{e.g.,} \textit{"Going downtown tonight it will be amazing on the waterfront with the snow"}. Here, the \textit{aoj} relation is \textit{aoj ( amazing@entry , it )}. 
 \textit{amazing} has a positive polarity and therefore overall polarity is positive in this case.\\
-4) If a given UW is the target of the \textit{mod} relation and the source UW has the attribute \textit{@entry} or has the attribute \textit{@indef} then polarity of the 
+\item If a given UW is the target of the \textit{mod} relation and the source UW has the attribute \textit{@entry} or has the attribute \textit{@indef} then polarity of the 
 target UW is added to the overall polarity of the text.
 \underline{e.g.,} \textit{"I like that bad boy"}. Here, the aoj relation is \textit{mod ( boy , bad )}. \textit{bad} has a negative polarity but the source UW, boy does not have an 
 \textit{@entry} attribute. So, in this case negative polarity of bad is not considered as should be the case.
 \underline{e.g.,} \textit{"She has a gorgeous face"}. Here, the mod relation is \textit{mod ( face@indef , gorgeous )}. \textit{gorgeous} has a positive polarity and face has an 
 attribute \textit{@indef}. So, polarity of gorgeous should be considered. \\
-5) If a given UW is the target of the \textit{man} relation and the source UW has the attribute \textit{@entry} then polarity of the target UW is added to the overall polarity of 
+\item If a given UW is the target of the \textit{man} relation and the source UW has the attribute \textit{@entry} then polarity of the target UW is added to the overall polarity of 
 the text. Or if the target UW has the attribute \textit{@entry} then also we can consider polarity of the target UW. 
 \underline{e.g.,} \textit{"He always runs fast"}. Here, the \textit{aoj} relation is \textit{mod ( run@entry , fast )}. \textit{fast} has a positive polarity and the source UW, run 
 has the \textit{@entry} attribute. So, in this case positive polarity of fast is added to the overall polarity of the sentence.
 Polarities of both the source and target UW of the \textit{and} relation are considered. \\
-6) In \textit{"Happy and Cheerful"}, the \textit{and} relation is \textit{and(Happy, Cheerful)}. \textit{Happy} and \textit{Cheerful}, both have a positive
+\item In \textit{"Happy and Cheerful"}, the \textit{and} relation is \textit{and(Happy, Cheerful)}. \textit{Happy} and \textit{Cheerful}, both have a positive
 polarity, which gives this sentence an overall positive polarity.
+ 
+\end{enumerate} 
  
 The polarity value of each individual word is looked up in a dictionary of positive of negative words used is \citep*{liu2010sentiment} After all the rules are applied, summation of all the calculated polarity values is done. 
 If this sum is greater than 0 then it is considered as positive, and negative otherwise. This system is negative biased due to the fact that people often tend to express negative sentiment 
-indirectly or by comparison with something good.
+indirectly or by comparison with something good. 
+
+In the next section, we will explain the experimental setup, results obtained and subsequent discussion.
+
+\section{Experiments}
+
+Analysis was performed for monolingual binary sentiment classification task. The language used in this case was \textit{English}. The comparison was done between 5 systems 
+viz. System using words as features, WordNet sense based system as given in \citep*{balamurali2011harnessing}, Clusters based system as described in ~\citep*{arhaves}, 
+Discourse rules based system as given in \citep*{mukherjee2012sentiment}, and the UNL rule based system. 
+
+\subsection{Datasets}
+
+Two polarity datasets were used to perform the experiments. 
+    
+\begin{enumerate}
+  \item \underline{EN-TD:} English Tourism corpus as used in \citep*{ye2009sentiment}. It consists of 594 positive and 593 negative reviews.
+  \item \underline{EN-PD:} English Product (music albums) review corpus \citep*{blitzer2007biographies}. It consists of 702 positive and 702 negative 
+  reviews. 
+\end{enumerate}
+   
+For the WordNet sense, and Clusters based systems, a manually sense tagged version of the (EN-PD) has been used. Also, a automatically sense tagged version of 
+(EN-TD) was used on these systems. The tagging in the later case was using an automated WSD engine, trained on a tourism domain \citep*{balamurali2013lost}.
+The results reported for supervised systems are based on 10-fold cross validation.
+   
+\subsection{Results}\label{results}
+
+\begin{center}
+  \begin{tabular}[h]{|l|c|c|}
+   \hline
+   \textbf{System} & \textbf{EN-TD} & \textbf{EN-PD} \\ \hline \hline
+   Bag of Words & 85.53 & 73.24 \\ \hline
+   Synset-based & 88.47 & 71.58 \\ \hline
+   Cluster-based & \textbf{95.20} & 79.36 \\ \hline
+   Discourse-based & 71.52 & 64.81 \\ \hline
+   UNL rule-based & 86.08 & \textbf{79.55} \\ \hline
+   \hline
+  \end{tabular}
+\end{center}
+\begin{center}
+ Table 5.1 Classification accuracy (in \%) for monolingual binary sentiment classification
+\end{center}
+
+  
+The results for monolingual binary sentiment classification task are shown in Table 5.1. The results reported are the best results obtained in 
+case of supervised systems. The cluster based system performs the best in both cases. The UNL rule-based system performs better only than the bag of words
+and discourse rule based system. For EN-PD ( music album reviews ) dataset, the UNL based system outperforms every other system . These results are very promising 
+for a rule-based system. The difference between accuracy for positive and negative reviews for the rule-based systems viz. Discourse rules based and UNL rules based 
+is shown in Table 5.2. It can be seen that the Discourse rules based system performs slightly better than the UNL based system for positive 
+reviews. On the other hand, the UNL rules based system outperforms it in case of negative reviews by a huge margin. 
+  
+\begin{center}
+  \begin{tabular}[h]{l|c|c|c|c|}
+   \cline{2-5}
+    & \multicolumn{2}{|c|}{\textbf{EN-TD}} & \multicolumn{2}{|c|}{\textbf{EN-PD}} \\ \hline
+    \textbf{System} & \textbf{Pos} & \textbf{Neg} & \textbf{Pos} & \textbf{Neg} \\ \hline \hline
+    Discourse rules & 94.94 & 48.06 & \textbf{92.73} & 36.89 \\ \hline
+    UNL rules & \textbf{95.72} & \textbf{76.44} & 90.75 & \textbf{68.35} \\ \hline
+   \hline
+  \end{tabular}
+\end{center} 
+\begin{center}
+ Table 5.2 Classification accuracy (in \%) for positive and negative reviews
+\end{center}
+
+\subsection{Discussion}
+
+The UNL generator used in this case is the bottleneck in terms of performance. Also, it makes use of the standard NLP tools viz. parsing, co-reference resolution, etc. 
+to assign the proper semantic roles in the given \textit{text}. It is well known fact that these techniques work properly only on structured data. The language used in 
+the reviews present in both the datasets is unstructured in considerable number of cases. The UNL generator is still in its infancy and cannot handle \textit{text} 
+involving special characters. Due to these reasons, a proper UNL graph is not generated in some cases. Also, it is not able to generator proper UNL graphs for even well 
+structured sentences like \textit{"It is not very good"}. In this case, the UW,  \textit{good} should have an attribute \textit{@not} which implies that it is used in 
+a negative sense. On the contrary, the UNL generator does not assign any such attribute to it, leading to incorrect classification. As a result of all these things, the 
+classification accuracy is low.
+
+Negative reviews have certain characteristics which make them difficult to classify. Sentences like \textit{"It is good but could be better"} are very common in negative 
+reviews. Some reviews are just to raise caution. A negative review about \textit{Las Vegas} contained the sentence, \textit{"Do not go to Las Vegas alone if you are female"}. 
+Some reviews contain mixed opinions. For example, \textit{"Beautiful Architecture. Expensive food"}. We stated the importance of time in sentiment analysis in \cref{unl}. 
+Examples of such a sentence is \textit{"A place I used to love. Not anymore"}. To infer that the sentence, \textit{"The hotel room had a Queen-sized bed"} has a negative 
+sentiment is not possible without proper domain knowledge. Sentiment is domain dependent as given in ~\citep*{liu2010sentiment}. The adjective \textit{cheesy} might be positive for a 
+food item but is definitely negative in cases like \textit{"The place is full of cheesy shows"}. Reviewers often criticize a place/thing by praising other places/things. In 
+the EN-TD dataset, negative reviews were full of sentences like \textit{"If you want dirt, go to L.A. . If you want peace, go to Switzerland."}. \textit{"I love New York 
+especially the 'Lovely brown fog'"} and \textit{"I adore the 'phony fantasy-land' that Vegas is"} are examples of sarcasm. Sarcasm is a very difficult problem to tackle. 
+Some related works can be found in ~\citep*{carvalho2009clues} and ~\citep*{gonzalez2011identifying}.
+
+In some cases, the reviewers make use of their native language and expressions. This is a big problem for the task of monolingual sentiment classification. From this 
+discussion, it is clear that two major points of concern are unstructured language and hidden sentiment
 
 \section*{SUMMARY}
 
 In the beginning, we expressed the motivation behind this approach. After that, related work was discussed. Then we explained the approach to use deep semantics in detail.
-The experiments performed using this approach will be explained in the next chapter.
+The system using deep semantics was compared with some state of the art systems for the sentiment classification task with two datasets. This was followed up by some
+interesting observations and error analysis.
+
+In the next chapter, we conclude and comment on some future work.
+
+\clearpage

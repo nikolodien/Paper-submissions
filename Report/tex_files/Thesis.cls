@@ -68,6 +68,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{2.0ex plus0.5ex minus0.2ex}
 \usepackage{vmargin}
+\usepackage{color}
 %----------------------------------------------------------------------------------------
 %	MARGINS
 %----------------------------------------------------------------------------------------
@@ -183,7 +184,7 @@
 %	defined as \examname above so you cite it as \examname
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Different approaches to Sentiment Analysis: Topic modeling and Semantics} % Your thesis title - this is used in the title and abstract
+\thesistitle{Different approaches to Sentiment Analysis: Topic modeling and Deep Semantics} % Your thesis title - this is used in the title and abstract
 %-------------------------------------------------  
 \supervisor{Dr. Pushpak Bhattacharya\textsc{}} % You supervisor's name - this is used in the title page
 %-------------------------------------------------   
