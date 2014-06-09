@@ -62,7 +62,7 @@ This is a snippet of the review for a movie named Skyfall . There are many entit
 is intended for the theater and not the movie. 3) is a positive statement about the screenplay which is an important aspect of the movie. 4) is a subjective
 statement but is made by the author’s brother and also it is about the hospitality in the theater and not the movie or any of its aspects. 5) reflects a positive
 view of the movie for the author. We can see from this example that not only the opinion but the opinion holder and the entity about which the opinion has been expressed 
-are also very important for sentiment analysis. Also, as can be seen from 1),4) and 5) there is also a notion of time associated with every sentiment expressed.
+are also very important for sentiment analysis. Also, as can be seen from 1), 4) and 5) there is also a notion of time associated with every sentiment expressed.
 Now, let us define the sentiment analysis problem formally as given in \citep*{liu2010sentiment}.
   
 \textit{A direct opinion about the object is a quintuple \(<o_j,f_{jk},oo_{ijkl},h_i,t_l>\), where \(o_j\) is the the object, \(f_{jk}\) is the feature of the object
@@ -241,18 +241,40 @@ structured sentences like \textit{"It is not very good"}. In this case, the UW, 
 a negative sense. On the contrary, the UNL generator does not assign any such attribute to it, leading to incorrect classification. As a result of all these things, the 
 classification accuracy is low.
 
-Negative reviews have certain characteristics which make them difficult to classify. Sentences like \textit{"It is good but could be better"} are very common in negative 
-reviews. Some reviews are just to raise caution. A negative review about \textit{Las Vegas} contained the sentence, \textit{"Do not go to Las Vegas alone if you are female"}. 
-Some reviews contain mixed opinions. For example, \textit{"Beautiful Architecture. Expensive food"}. We stated the importance of time in sentiment analysis in \cref{unl}. 
-Examples of such a sentence is \textit{"A place I used to love. Not anymore"}. To infer that the sentence, \textit{"The hotel room had a Queen-sized bed"} has a negative 
-sentiment is not possible without proper domain knowledge. Sentiment is domain dependent as given in ~\citep*{liu2010sentiment}. The adjective \textit{cheesy} might be positive for a 
-food item but is definitely negative in cases like \textit{"The place is full of cheesy shows"}. Reviewers often criticize a place/thing by praising other places/things. In 
-the EN-TD dataset, negative reviews were full of sentences like \textit{"If you want dirt, go to L.A. . If you want peace, go to Switzerland."}. \textit{"I love New York 
-especially the 'Lovely brown fog'"} and \textit{"I adore the 'phony fantasy-land' that Vegas is"} are examples of sarcasm. Sarcasm is a very difficult problem to tackle. 
-Some related works can be found in ~\citep*{carvalho2009clues} and ~\citep*{gonzalez2011identifying}.
+Negative reviews have certain characteristics which make them difficult to classify. Some of them are listed below.
+
+\begin{enumerate}
+ \item \textbf{Relative opinions containing positive words}
+  \begin{enumerate}
+    \item Sentences like \textit{``It is good but could be better''} are very common in negative reviews.
+    \item A user in a review about a certain travel destination says, \textit{``Came here just two days ago. Lucky to have got our flight back home''}
+  \end{enumerate}
+ \item \textbf{Some negative reviews are just to raise caution} \\
+  A negative review about \textit{Las Vegas} contained the sentence, \textit{``Do not go alone to Las Vegas if you are a female''}
+ \item \textbf{Mixed opinions} \\
+  Some reviews contain mixed opinions. For example, \textit{``Beautiful Architecture. Expensive food''}.
+ \item \textbf{A sense of time} \\
+  We stated the importance of time in sentiment analysis in \sref{deep}. A perfect example which shows the importance of time is, \textit{``A place I used to love. Not 
+  anymore''}. One more example is \textit{``The best city in the world, `Once upon a time'.''}.
+ \item \textbf{Lack of domain knowledge} \\
+  Some reviews require domain knowledge to understand their meaning. Consider the sentence \textit{``They gave us a Queen-size bed''}. Here, the the phrase 
+  \textit{``Queen-size bed''} refers to a small bed. People usually refer to beds having sufficient space as \textit{``King-size bed''}.
+ \item \textbf{Domain dependence of sentiment} \\
+  Sentiment is domain dependent as given in ~\citep*{liu2010sentiment}. The adjective \textit{cheesy} might be positive for a food item but is definitely negative in cases
+  like \textit{``The place is full of cheesy shows''}.  
+ \item \textbf{Comparison with other entities} \\
+  Reviewers often criticize a place/thing by praising other places/things. In the EN-TD dataset, negative reviews were full of sentences like \textit{``If you want dirt, go 
+  to L.A. . If you want peace, go to Switzerland."}.
+ \item \textbf{Sarcasm} \\
+  Sarcasm is the most notorious problems in \textit{SA}. \textit{``I love New York especially the 'Lovely brown fog'''} and \textit{``I adore the 'phony fantasy-land' that 
+  Vegas is''} are examples of sarcasm. Sarcasm is a very difficult problem to tackle. Some related works can be found in ~\citep*{carvalho2009clues} and ~\citep*{gonzalez2011identifying}.
+ \item \textbf{New notations} \\
+  During our error analysis, we observed sentences like, \textit{``I love it ?!?!''}, \textit{``Too \$\$\$\$''}, \textit{``No value for \$\$\$\$''}. In these examples the
+  negative sentiment is clear but difficult to detect. 
+\end{enumerate}
 
 In some cases, the reviewers make use of their native language and expressions. This is a big problem for the task of monolingual sentiment classification. From this 
-discussion, it is clear that two major points of concern are unstructured language and hidden sentiment
+discussion, it is clear that two major points of concern are unstructured language and hidden sentiment.
 
 \section*{SUMMARY}
 

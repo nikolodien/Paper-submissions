@@ -8,14 +8,17 @@
 
 %----------------------------------------------------------------------------------------
 
-In this chapter, we will show how topic models are used for \textit{SA}. In the first section, we will show how the basic \textit{LDA} model can be used  to classify 
-documents based on their polarity. After that, we will explain the \textit{JST} model in detail. Joint sentiment and topic models have been used to tackle the sentiment 
-classification problem. Despite having a hierarchical structure, these generative models have a bag of words assumption. Due to this fact, they tend to misclassify 
-texts having sentiment in the form of phrases. \textit{LDA} and it's extensions don't work properly with phrases. To tackle this situation, we propose an unsupervised 
-approach to sentiment analysis using the topical n-grams model which has been shown to be effective with phrases. We train the topical n-grams model using two topics 
-i.e., positive, and negative, list of positive and negative words, and rules to detect positive and negative phrases. New documents are then classified using this trained 
-model. The system gives better results than the existing Joint Sentiment Topic model. We also propose an approach to generate a list of positive and negative words using
-LDA based on our observations reported in section ~\sref{experiments}.
+In this chapter, we will show how topic models are used for \textit{SA}. In the first section, we go through some of the related work where sentiment and topic have
+been jointly modeled. After that, we show how the basic \textit{LDA} model can be used  to classify documents based on their polarity.  This is followed by the 
+explanation of the \textit{JST} model in detail. The use of \textit{Topical n-grams} model for \textit{SA} is shown in the section following this. The experimental
+setup, results, and error analysis is done in ~\sref{experiments}.
+
+Joint sentiment and topic models have been used to tackle the sentiment classification problem. Despite having a hierarchical structure, these generative models have 
+a bag of words assumption. Due to this fact, they tend to misclassify texts having sentiment in the form of phrases. \textit{LDA} and it's extensions don't work properly
+with phrases. To tackle this situation, we propose an unsupervised approach to sentiment analysis using the topical n-grams model which has been shown to be effective 
+with phrases. We train the topical n-grams model using two topics i.e., positive, and negative, list of positive and negative words, and rules to detect positive and 
+negative phrases. New documents are then classified using this trained model. The system gives better results than the existing Joint Sentiment Topic model. We also propose
+an approach to generate a list of positive and negative words using LDA based on our observations reported in ~\sref{experiments}.
 
 In the next section, we will point out some of the related work in this direction.
 
@@ -62,10 +65,33 @@ as follows.
  \item Set number of topics, 2 in this case viz. positive and negative.
  \item Remove stop-words.
  \item Remove objective words as they won't affect sentiment.
- \item Gibbs Sampling with prior using lists of positive and negative words.
+ \item \textbf{Gibbs Sampling} with prior using lists of positive and negative words.
+  Gibbs Sampling was explained in detail in \cref{ir}. We will again explain it briefly here.
+  \begin{itemize}
+   \item Go through each document, and randomly assign each word in the document to one of the \(K\) topics. this random assignment already gives you both topic 
+   representations of all the documents and word distributions of all the topics (albeit not very good ones). 
+   \item So to improve on them, for each document \(d\), go through each word \(w\) in \(d\), and for each topic \(t\), compute two things.
+   \begin{enumerate}
+    \item \(p(t|d)\) = the proportion of words in document \(d\) that are currently assigned to topic \(t\).
+    \item \(p(w|t)\) = the proportion of assignments to topic \(t\) over all documents that come from this word \(w\). 
+   \end{enumerate}
+   \item After this, Reassign \(w\) a new topic, where you choose topic \(t\) with probability \(p(t|d) \times p(w|t)\) . According to the generative model, this is 
+   essentially the probability that topic \(t\) generated word \(w\), so it makes sense that we re-sample the current word's topic with this probability. In this step,
+   we're assuming that all topic assignments except for the current word in question are correct, and then updating the assignment of the current word using our model 
+   of how documents are generated.
+   \item After a suitable number of iterations, we get a proper probability distribution.
+  \end{itemize}
+  As explained here, the \textbf{first step assigns topics randomly}. In our case, we make \textbf{use of prior knowledge which a list of positive and negative words
+  to assign the positive or negative topic to each word} initially. The inclusion of prior increases the accuracy of the system as shown in ~\sref{experiments}.
  \item Use the trained model to classify a new document as positive or negative.
 \end{itemize}
 
+Having prior knowledge in the case of LDA, means we have the word-topic distribution as shown in Figure 4.1.
+
+\includegraphics[width=\textwidth]{lda/ldawithprior.png} 
+\begin{center}
+ Figure 4.1 LDA with prior
+\end{center}
 
 \subsection{Example}
 
@@ -188,9 +214,9 @@ used in IR, extending and tuning them for SA aware IR can yield good results.
 
 \citep*{lin2009joint} discusses a joint model of sentiment and topics. Following figure shows the model.
 
-\includegraphics[width=\textwidth]{jst/jst.png} 
+\includegraphics[width=\textwidth]{jst/jst2.png} 
 \begin{center}
- Figure 4.1 Joint Sentiment Topic Model
+ Figure 4.2 Joint Sentiment Topic Model
 \end{center}
 
 Assume that we have a collection of \(D\) documents denoted by \(C = {d_1,d_2,\cdots,d_D} \); each document in the corpus is a sequence of \(N_d\) words denoted by 
@@ -299,18 +325,18 @@ In the next section, we will explain the topical n-grams model.
 
 \section{Topical n-grams model}
 
-
-\includegraphics[width=\textwidth]{topicalngram.png} 
-\begin{center}
- Figure 4.2 Topical n-grams model
-\end{center}
-
 n-gram phrases (or collocations) are fundamentally important in many areas of natural language processing (e.g., parsing, machine translation and information retrieval). 
 Phrase as the whole carries more information than the sum of its individual components, thus it is much more crucial in determining the topics of document collections than
 individual words \citep*{wang2005note}. However, most of the topic models assume that words are generated independently to each other, i.e., under the bag of words assumption.
 The possible over complicacy caused by introducing phrases makes these topic models completely ignore them. It is true that these models with the bag of words assumption have
 enjoyed a big success, and attracted a lot of interests from researchers with different backgrounds. A topic model considering phrases would be more useful in certain 
 applications. Topical n-grams model is one such generative model. It's generative process is explained as follows,
+
+
+\includegraphics[width=\textwidth]{tng.png} 
+\begin{center}
+ Figure 4.3 Topical n-grams model
+\end{center}
 
 \begin{enumerate}
  \item Draw multinomial \(\phi_z\) from a Dirichlet prior \(\beta\);
@@ -422,7 +448,7 @@ i would} recommend {\color[rgb]{0.4,0.4,0.4}it if you} enjoyed {\color[rgb]{0.4,
 
 \textbf{The input text to form bigrams}
 
-\textit{worried wouldn't. wasn't good funnier. decent. not regret. not mind. sad. recommed enjoyed}
+\textit{worried wouldn't. wasn't good funnier. decent. not regret. not mind. sad. recommend enjoyed}
 
 \textbf{After forming bigrams}
 
