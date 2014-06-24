@@ -525,13 +525,35 @@ LDA can be used for resource generation of positive and negative words. The step
  \item Remove stop-words.
  \item Gibbs Sampling with prior using lists of positive and negative words. In the initial step, words present 
  in the list are assigned that specific topic but the other words as assigned a topic randomly.
- \item Get the top words in the positive and negative topics.
+ \item Get the top words in the positive and negative topics. 
 \end{itemize}
 
-The list of positive and negative words we obtained using this approach were used to enhance our systems as show in ~\sref{experiments}.
+The list of positive and negative words we obtained using this approach were used to enhance our systems. Table 
+4.2 shows some of the high probability in positive and negative topics.
+
+\begin{center}
+\begin{tabular}{ |p{7cm}|p{7cm}| }
+  \hline \hline
+  Positive & Negative \\ \hline \hline
+  life character performance love work real beautiful true performances heart friends brilliant strong modern perfect 
+  greatest romantic power wonderful superb excellent supporting star masterpiece high powerful western fine perfectly 
+  talent memorable epic beauty rich classic chemistry talented popular sweet success interesting successful beautifully 
+  win hilarious respect highly stunning convincing outstanding charming large fresh charm fascinating breathtaking 
+  intriguing unpredictable poignant recommended surprisingly heartwarming touching respectful engrossing superfluous & 
+  bad horror mind boring death stupid evil fight long worse alien awful scary wrong slow kill violence terrible horrible 
+  killer low ridiculous hell predictable silly gore poorly lack weak lost obvious hate fighting killing cheesy dumb 
+  crazy wasted violent creepy weird average mad crap sick poor badly garbage sadly fake sad pathetic unbelievable nudity 
+  disaster lacks confusing tension painful revenge shock spoilers nightmare creeper blasphemous dumbfounded anticlimactic
+  neverending leatherface torture predictability unsympathetic needless gratuitous frankenstein ineptitude  \\ \hline
+\end{tabular}
+\end{center}
+\begin{center}
+ Table 4.2 High probability words after resource generation
+\end{center}
+
 
 The word lists we generated using this approach were used to test the systems using priors. The results for the same
-are shown in Table 2. We can see a marginal increase in the accuracy in this setting.
+are shown in Table 4.3. We can see a marginal increase in the accuracy in this setting.
 
 \begin{center}
 \begin{tabular}{|l|c|}
@@ -543,15 +565,15 @@ Topical n-gram with prior & \textbf{89.83}\\
 \end{tabular}
 \end{center}
 \begin{center}
- Table 4.2 Evaluation using resources generated using \textit{LDA}
+ Table 4.3 Evaluation using resources generated using \textit{LDA}
 \end{center}
 
 
 \section*{Summary}
 In this chapter we explained how basic LDA can be used to perform the sentiment classification task. We also studied two models which combine sentiment
 and topics. Both the systems have shown high competence in classification tasks. We also discussed the the topical n-gram model in detail and explained 
-how it can be used for sentiment classification. After that, we showed through experiments that this technique actually work and perform better than the
-bag of words and \textit{JST} model. 
+how it can be used for sentiment classification. After that, we showed through experiments that this technique performs better than the bag of words and
+\textit{JST} model. 
 
 In the next chapter, we will see how deep semantics can be used for sentiment analysis.
 
