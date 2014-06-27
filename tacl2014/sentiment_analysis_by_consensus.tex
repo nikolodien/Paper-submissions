@@ -47,34 +47,38 @@
 \maketitle
 \begin{abstract}
 Sentiment Analysis is mainly the classification of text into two classes viz. 
-positive and negative. Joint sentiment and topic models have been used to 
-tackle this classification problem.  Despite having a hierarchical structure, 
-these generative models have a bag of words assumption. Due to this fact, 
-they tend to misclassify texts having sentiment in the form of phrases. LDA 
-and it's extensions don't work properly with phrases. To tackle this situation, 
-we propose an unsupervised approach to sentiment analysis using the topical n-grams model
-which has been shown to be effective with phrases. We train the topical n-grams 
-model using two topics i.e., positive and negative, list of positive and negative 
-words, and rules to detect positive and negative phrases. New documents are then 
-classified using this trained model. The system gives better results than the 
-existing Joint Sentiment Topic model. We also propose an approach to generate 
-list of positive and negative words using LDA.
+positive and negative. Text can also be categorized into two broad types i.e.,
+structured and unstructured. Each type of text has it's own subtleties and 
+it is not possible to handle both the types by a common technique. All the 
+statistical systems handle unstructured data and systems using language structure
+and semantic knowledge can work only on structured data. We propose a system 
+which will work irrespective of the type of data. We do this by taking into 
+account the output of three systems, bag of words, system using topical n-grams
+model, and a system making use of deep semantics. The algorithm gives more 
+weightage to the third system and the intuition behind this is explained later.
+The resultant system performs very well for the binary sentiment classification
+task.
 
 \end{abstract}
 
 \section{Introduction}
 
+Bag of words using a \textit{SVM} classifier as mentioned by Bing Liu ~\shortcite{liu2010sentiment}
+is the easiest and one of the most popular method for sentiment analysis. The 
+accuracy of this technique is good for most applications but it has many shortcomings
+as it does not take into account many linguistic aspects. Inspite of it's 
+limitations it works well for unstructured data.
 
-\indent LDA (Latent Dirichlet Allocation) as shown by Blei et al.~\shortcite{blei2003latent} 
-is a generative model used to discover topics in a document collection. It gives two types of 
-distributions as output, document-topic and word-topic distributions. The document-topic
-distribution gives the proportion of topics in each document and the word-topic 
-distribution gives the probability of a word being in each topic. LDA works on the 
-principle of co-occurrence. It assumes that words tending to appear together belong 
-to the same topic. JST (Joint Sentiment Topic) as explained by Lin and He~\shortcite{lin2009joint} 
-is a probabilistic generative model which extends LDA and discovers both sentiment 
-and topic simultaneously in a document collection. JST has shown promising results 
-on binary sentiment classification. 
+\indent LDA (Latent Dirichlet Allocation) as shown by Blei et al.~\shortcite{blei2003latent}
+is a generative model used to discover topics in a document collection. It gives 
+two types of distributions as output, document-topic and word-topic distributions. 
+The document-topic distribution gives the proportion of topics in each document 
+and the word-topic distribution gives the probability of a word being in each topic.
+LDA works on the principle of co-occurrence. It assumes that words tending to appear
+together belong to the same topic. JST (Joint Sentiment Topic) as explained by Lin 
+and He~\shortcite{lin2009joint} is a probabilistic generative model which extends LDA
+and discovers both sentiment and topic simultaneously in a document collection. JST 
+has shown promising results on binary sentiment classification. 
 
 There are many extensions of the basic LDA model which try to combine both sentiment 
 and topic to solve the problem of sentiment analysis. All these models including LDA 
@@ -97,35 +101,35 @@ in our experiments are restricted to bigrams. We then use this trained model to 
 distribution for new documents. The topic having higher proportion is considered to be
 the class of the document.
 
+Jadhav et al. ~\shortcite{jadhav2014dive} have shown the use of deep semantics for 
+sentiment analysis using UNL \footnote{\url{http://www.unlweb.net/wiki/Introduction_to_UNL}}
+as an intermediate representation to be effective for handling structured data. So, we have
+three systems, the first two systems work well on unstructured data and the third system 
+which performs good on structured data. We propose a simple algorithm which takes into 
+account the output of these three systems. The algorithm gives weightage to the outputs
+of these systems such that for structured data, the output of UNL system is considered
+and for unstructured data, the output of first two systems is considered.
+
 Rest of the paper is organized as follows. Section~\ref{survey} discusses related work
-in this area. Section~\ref{process} explains our approach in detail. The experimental 
-setup is explained in Section~\ref{experiments}. Results of the experiments are presented
-in Section~\ref{results}. Section~\ref{discussion} discusses these results followed by
-explanation of the use of topic models for resource generation in Section~\ref{resource}.
-Section~\ref{conclusion} concludes and  hints to some future work are given in 
-Section~\ref{futurework}.
+in this area. Section~\ref{phrasebased} explains the approach using topical n-grams model
+for phrase based sentiment analysis. An overview of the method using deep semantics is
+given in section~\ref{deep}. Section~\ref{consensus} explains the approach using consensus.
+The experimental setup is explained in section~\ref{experiments}. Results of the experiments
+are presented in Section~\ref{results} followed up by discussion in section~\ref{discussion}.
+Section~\ref{conclusion} concludes and  hints to some future work are given in Section~\ref{futurework}.
 
 
 \section{Related Work}\label{survey}
 
-There are many supervised, semi-supervised and unsupervised approaches to solve the 
-sentiment analysis problem. One supervised method based on n-gram analysis is explained by
-Bespalov et al.~\shortcite{bespalov2011sentimen}. In this they map the n-grams to a low-
-dimensional latent semantic space where a classification function can be defined. Our approach 
-being unsupervised, we will go through some of the related work in that direction. One more 
-motivation to consider only semi-supervised and unsupervised approaches is the fact that they 
-don't need any corpus and don't have any domain specific limitations. Rule based systems can 
-also be considered as unsupervised systems but usually due to exceptions to these rules, their 
-performance is affected. Due to this, we are not considering them in further discussion.
-
-Turney and Littman~\shortcite{turney2002thumbs} used an unsupervised learning algorithm 
-based on mutual information between document phrases and a small set of positive/negative 
-paradigm words called seed words to classify the semantic orientation at the word/phrase 
-level. Another unsupervised approach to classify the text at document level was proposed
-by Turney~\shortcite{turney2002unsupervised}. Eguchi and Lavrenko~\shortcite{eguchi2006sentiment} 
-created a generative model that jointly models sentiment words, topic words and sentiment
-polarity in a sentence as a triple. Mei et al.~\shortcite{mei2007topic} proposed another 
-generative model, called TSM (Topic Sentiment Mixture) model which can be used to discover 
+Bespalov et al.~\shortcite{bespalov2011sentimen} map the n-grams to a low-dimensional latent 
+semantic space where a classification function can be defined. Turney and Littman~\shortcite{turney2002thumbs}
+used an unsupervised learning algorithm based on mutual information between document phrases 
+and a small set of positive/negative paradigm words called seed words to classify the semantic 
+orientation at the word/phrase level. Another unsupervised approach to classify the text at 
+document level was proposed by Turney~\shortcite{turney2002unsupervised}. Eguchi and 
+Lavrenko~\shortcite{eguchi2006sentiment} created a generative model that jointly models sentiment
+words, topic words and sentiment polarity in a sentence as a triple. Mei et al.~\shortcite{mei2007topic}
+proposed another generative model, called TSM (Topic Sentiment Mixture) model which can be used to discover 
 topics in blogs as well as their associated sentiments. A novel generation model that 
 unifies topic-relevance and opinion generation by a quadratic combination was proposed by 
 Zhang and Ye~\shortcite{zhang2008generation}. A probabilistic generative model based on LDA
@@ -137,7 +141,18 @@ unsupervised methods using generative models discussed here operate at the word 
 to this they lose out on the information provided by phrases which may lead to incorrect 
 classification.
 
-\section{Phrase based Sentiment Analysis}\label{process}
+\section{Phrase based Sentiment Analysis for Unstructured Data}\label{phrasebased}
+
+Joint sentiment and topic models have been used to tackle this classification problem.  
+Despite having a hierarchical structure, these generative models have a bag of words assumption. Due to this fact, 
+they tend to misclassify texts having sentiment in the form of phrases. LDA 
+and it's extensions don't work properly with phrases. To tackle this situation, 
+we propose an unsupervised approach to sentiment analysis using the topical n-grams model
+which has been shown to be effective with phrases. We train the topical n-grams 
+model using two topics i.e., positive and negative, list of positive and negative 
+words, and rules to detect positive and negative phrases. New documents are then 
+classified using this trained model. The system gives better results than the 
+existing Joint Sentiment Topic model.
 
 We will explain the use of basic LDA and Topical n-grams for Sentiment Classification in
 this section. We won't go into the mathematical details of these models for the constraint 
@@ -204,6 +219,24 @@ the rules as they are concerned with subjectivity.
  \textbf{Examples:} \textit{beautifully amazing} is positive as both words as positive. \textit{lack respect} is
  assigned negative as per the rules.
 \end{enumerate}
+
+\section{Deep Semantics for Sentiment Analysis of Structured Data}\label{deep}
+
+
+\section{Sentiment Analysis by Consensus}\label{consensus}
+
+The experiments for binary sentiment classification task using the systems mentioned in section \ref{phrasebased}
+and section \ref{deep} showed promising results but on different types of data. The first system performs well
+on unstructured data while the latter performs better on structured data. We want a system that performs well
+irrespective of the type of data. For this, we propose a system which combines the output of the following three
+systems.
+
+\begin{enumerate}
+ \item Bag of Words using SVM (Supervised)
+ \item Phrase based sentiment analysis using Topical n-grams (Semi-supervised)
+ \item Sentiment Analysis using Deep Semantics (Rule based)
+\end{enumerate}
+
 
 \section{Experimental Setup}\label{experiments}
 
@@ -314,6 +347,20 @@ topics. Instead of adding rules, we can make use of machine learning techniques 
 %\bibliography{acl2014}
 
 \begin{thebibliography}{}
+
+\bibitem[\protect\citename{Nikhilkumar Jadhav}2014]{jadhav2014dive}
+Jadhav, Nikhilkumar
+\newblock 2014.
+\newblock {\em Dive deeper: Deep Semantics for Sentiment Analysis}.
+\newblock {\em Proceedings of the 5th Workshop on Computational Approaches to Subjectivity, Sentiment and Social Media Analysis}, pages 113-118.
+\newblock ACL.
+
+\bibitem[\protect\citename{Bing Liu}2010]{liu2010sentiment}
+Liu, Bing
+\newblock 2010.
+\newblock {\em Sentiment analysis and subjectivity}.
+\newblock {\em Handbook of natural language processin}, volume 2,pages 627-666.
+\newblock Chapman \& Hall.
 
 \bibitem[\protect\citename{Bespalov et al.}2011]{bespalov2011sentimen}
 Bespalov, Dmitriy and Bai, Bing and Qi, Yanjun and Shokoufandeh, Ali
