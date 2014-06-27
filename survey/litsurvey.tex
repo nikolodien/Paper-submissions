@@ -76,13 +76,13 @@ Topic models are probabilistic generative models. Topic models try to model the 
 and usually the generation process of text by means of a bayesian network. \\
 
 
-\textit{Latent Dirichlet Allocation} (LDA) is one of the most popular topic models \citep*{blei2003latent}.
+\textit{Latent Dirichlet Allocation} (\textit{LDA}) is one of the most popular topic models \citep*{blei2003latent}.
 Here, the word \emph{latent} signifies capturing the meaning of the text by finding out the 
-hidden topics. It identifies the topic structure in text using co-occurence structure of
+hidden topics. It identifies the topic structure in text using co-occurrence structure of
 terms. It is completely unsupervised as it does not require any background knowledge. The
 model is as show in figure \ref{lda}. The replication of a node is represented by a \textit{plate}. 
 This is to account for multiple values or mixture components. Let us have a look at the
-generative process of LDA.
+generative process of \textit{LDA}.
 
 % \begin{wrapfigure}{r}{0.5\textwidth}
 %   \vspace{-10pt}
@@ -219,14 +219,14 @@ for all documents \(m \in [1,M]\) do
     sample topic index \(z_{m,n} = k \sim Mult(1/K)\)
     increment document-topic count: \(n_m^{(k)} + 1\)
     increment document-topic sum: \(n_m + 1\)
-    incremnet topic-term count: \(n_k^{(t)} + 1\)
+    increment topic-term count: \(n_k^{(t)} + 1\)
     increment topic-term sum: \(n_k + 1\)
   end for
 end for
 \(\Box\) Gibbs sampling over burn-in period and sampling period
 while not finished do
   for all documents \(m \in [1,M]\) do
-    for all words \(n \in [1,N_m]\) in docuemnt \(m\) do
+    for all words \(n \in [1,N_m]\) in document \(m\) do
       \(\Box\) for the current assignment of \(k\) to a term \(t\) for word \(w_{m,n}\) \(\colon\)
       decrement counts and sum:\(n_m^{k}-1,n_m-1,n_k^{(t)}-1,n_k-1\)
       \(\Box\) multinomial sampling according to equation \ref{eqn:fullconditionalfinal} (decrements from the previous step)
@@ -297,18 +297,28 @@ First we will focus on the word-topic distribution
  \item \textit{List of top words in a given topic} \\
  Using the the word-topic distribution, we can get a list of top \(n\) words in any given topic.
  \item \textit{Clustering of Words by topic} \\
- This distribution can also be used to cluster new words based on the co-occurence principle.
+ This distribution can also be used to cluster new words based on the co-occurrence principle.
 \end{enumerate}
 
 
 \subsection{Applications of Topic-Document Distribution}
 
+Let us have a look at the applications which use the topic-document distribution.
+
 \begin{enumerate}
- \item \textit{Quering}
+ \item \textbf{Similarity Ranking} \\
+  We can find the topic distribution for each of the document and compare them for similarity. As these are probability distributions, we make use of a modified
+  KL-divergence method to do this.
+  
+ \item \textbf{Querying} \\
+  Querying makes use of similarity ranking to find the documents which are most similar to a given a query.
  
- \item \textit{Similarity Ranking}
+ \item \textbf{Clustering} \\
+  Documents can be clustered as per their major topic.
  
- \item \textit{Clustering}
+ \item \textbf{Document classification} \\
+  The topic having highest proportion in the document will be it's class.
+ 
 \end{enumerate}
 
 
@@ -327,7 +337,7 @@ We will have a look at the following models one by one.
 
 \subsection{A Generative model for sentiment}
 
-Sentimetn Analysis has been used in Information Retrieval to improve the performance. Information Retrieval was mainly concerned with factual/objective data. So, 
+Sentiment Analysis has been used in Information Retrieval to improve the performance. Information Retrieval was mainly concerned with factual/objective data. So, 
 intuitively we see that subjectivity classification can aid information retrieval. \citep*{riloff2005exploiting} has work based on it in which they try to exploit 
 subjectivity analysis to improve performance of information extraction. Corpus models are useful in fetching documents specific to a certain topic. Sometimes a user
 might need to fetch documents which have a specific sentiment. One such work on sentiment retrieval using generative models is seen in \citep*{eguchi2006sentiment}. 
@@ -400,14 +410,74 @@ used in IR, extending and tuning them for SA aware IR can yield good results.
 
 \subsection{TSM}
 
+\citep*{mei2007topic} proposed the topic sentiment mixture model. Figure \ref{tsm} shows the model. The \textit{TSM} model helps to address the following problems.
+
+\begin{enumerate}
+ \item \textbf{Learning General Sentiment models} \\
+ Learn a sentiment model for positive opinions and a sentiment model for negative opinions, which are general enough to be used in new unlabeled collections.
+ \item \textbf{Extracting Topic models and Sentiment Coverages} \\
+ Given a collection of Weblog articles and the general sentiment models learned, customize the sentiment models to this collection, extract the topic models, and 
+ extract the sentiment coverages.
+ \item \textbf{Modeling Topic Life Cycle and Sentiment Dynamics} \\
+ Model the life cycles of each topic and the dynamics of each sentiment associated with that topic in the given collection. 
+\end{enumerate}
+
+\begin{figure}[h!]
+   \centering
+     \includegraphics[width=\textwidth]{TSM}
+   \caption{Topic Sentiment Mixture Model}
+   \label{tsm}
+\end{figure}
+
+\subsubsection*{Word Categories}
+
+It divides the words in the document into two major classes
+\begin{enumerate}
+ \item \textbf{Common English words} e.g., ``the'', ``a'', ``of'', etc.
+ \item \textbf{Topic words} eg., ``nano'', ``price'', ``mini'' in the document about \textit{iPod}. The topic words are further divided into three classes.
+ \begin{enumerate}
+  \item words about the topic with \textbf{neutral} opinion
+  \item words about the topic with \textbf{positive} opinion
+  \item words about the topic with \textbf{negative} opinion
+ \end{enumerate}
+\end{enumerate}
+
+\subsubsection*{Multinomials}
+
+There are four multinomial distributions to take note of 
+\begin{enumerate}
+ \item \(\theta_B\) is a background topic model to capture common English words.
+ \item \(\theta = {\theta_1 , ..., \theta_k }\) are \(k\) topic models to capture neutral descriptions about \(k\) global subtopics in the collection.
+ \item \(\theta_P\) is a positive sentiment model to capture positive opinions for all the topics in the collection.
+ \item \(\theta_N\) is a negative sentiment model to capture negative opinions for all the topics in the collection.
+\end{enumerate}
+
+\subsubsection*{Generation Process}
+
+An author follows the procedure given below to generate each word of the document.
+
+\begin{enumerate}
+ \item The author would first decide whether the word will be a common English word. If so, the word would be sampled according to \(\theta_B\).
+ \item If not, the author would then decide which of the \(k\) subtopics the word should be used to describe. 
+ \item Once the author decides which topic the word is about, the author will further decide whether the word is used to describe the topic neutrally, positively,
+ or negatively.  
+ \item Let the topic picked in step 2 be the \(jth\) topic \(\theta_j\) . The author would finally sample a word using \(\theta_j\), \(\theta_P\) or \(\theta_N\), according 
+ to the decision in step 3
+\end{enumerate}
+
+The accuracy of the model can be increased by providing domain specific lexicons.
+
 \subsection{Joint Sentiment Topic model}
 
-\citep*{lin2009joint} discusses a joint model of sentiment and topics. Following figure shows the model.
+\citep*{lin2009joint} discusses a joint model of sentiment and topics. Figure \ref{jst} shows the model.
 
-\includegraphics[width=\textwidth]{jst.png} 
-\begin{center}
- Figure 4.2 Joint Sentiment Topic Model
-\end{center}
+
+\begin{figure}[h!]
+   \centering
+     \includegraphics[width=\textwidth]{jst}
+   \caption{Joint Sentiment Topic model}
+   \label{jst}
+\end{figure}
 
 Assume that we have a collection of \(D\) documents denoted by \(C = {d_1,d_2,\cdots,d_D} \); each document in the corpus is a sequence of \(N_d\) words denoted by 
 \(d = (w_1,w_2,\cdots,w_{N_d}) \) and each word in the document is an item from a vocabulary index with V distinct terms denoted by \({1,2,\cdots,V}\). Let \(S\) and 
@@ -493,6 +563,25 @@ as compared to existing approaches for sentiment classification. The performance
 approaches.
 
 \subsection{Aspect Sentiment Unification model}
+
+\citep*{jo2011aspect} proposed the aspect-sentiment unification model. It is similar to \textit{JST} model. \textit{JST} does not limit individual words. 
+\textit{JST} is different from \textit{ASUM} in that individual words may come from different language models. In contrast, \textit{ASUM} constrains the words 
+in a single sentence to come from the same language model, so that each of the inferred language models is more focused on the regional co-occurrences of the 
+words in a document. Both \textit{JST} and \textit{ASUM} make use of a small seed set of sentiment words, but the exploitation is not explicitly modeled in \textit{JST}. 
+\textit{ASUM} integrates the seed words into the generative process, and this provides \textit{ASUM} with a more stable statistical foundation
+
+
+\begin{figure}[h!]
+   \centering
+     \includegraphics[width=\textwidth]{ASU}
+   \caption{Aspect Sentiment Unification model}
+   \label{asu}
+\end{figure}
+
+
+\section*{SUMMARY}
+We introduced topic models with \textit{LDA} in section \ref{sec1}. The generative process and the inference method was explained in detail. The various applications
+of topic models were discussed in section \ref{sec2}. Finally, in section \ref{sec3} we had a look at the generative models which combine topics and sentiment.
 
 \bibliographystyle{abbrvnat}
 \bibliography{Bibliography}
